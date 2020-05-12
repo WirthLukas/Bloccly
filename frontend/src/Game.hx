@@ -4,6 +4,9 @@ import hxd.Key;
 import h2d.Interactive;
 import h2d.Tile;
 import h2d.Bitmap;
+import model.Block;
+
+using pattern.observer.ObservableExtender;
 
 class Game extends hxd.App {
     private var b: Bitmap;
@@ -51,5 +54,9 @@ class Game extends hxd.App {
     static function main() {
         Res.initEmbed();
         new Game();
+
+
+        var t = new Block();
+        t.addObserver(null);
     }
 }
