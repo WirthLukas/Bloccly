@@ -1,6 +1,6 @@
 package model;
 
-enum BlockType {
+enum FigureType {
     Orange;
     Blue;
     DarkBlue;
