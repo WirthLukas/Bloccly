@@ -1,17 +1,33 @@
+import h2d.Text;
 import hxd.Res;
 import logic.BlockPool;
-import model.Figure;
+import core.models.Figure;
 import logic.FigureBuilder;
+import view.BlockTile;
 import hxd.Key;
 
 // For Extension Method
-using pattern.observer.ObservableExtender;
+using core.pattern.observer.ObservableExtender;
 
 class Game extends hxd.App {
 
     private var figure: Figure;
+    private var pool: BlockPool;
+    private var tf: Text;
+    private var i = 0;
+
+    public function new() {
+        super();
+        pool = new BlockPool();
+        pool.setAddListener(block -> {
+            new BlockTile(block, s2d);
+            // i++;
+            // log("" + i);
+        });
+    }
 
     override function init() {
+        tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
         /*var tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
         tf.text = "Hello World !";
 
@@ -27,7 +43,11 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = FigureBuilder.getBlue(new BlockPool(), 3, 3);
+        figure = FigureBuilder.getBlue(pool, 10, 0);
+    }
+
+    private function log(text: String) {
+        tf.text = text;
     }
 
     override function update(dt:Float) {
@@ -47,7 +67,14 @@ class Game extends hxd.App {
             // block.y += 900 * dt;
         }*/
 
-        figure.moveDown();
+        if (Key.isPressed(Key.DOWN)) {
+            figure.moveDown();
+        } else if (Key.isPressed(Key.LEFT)) {
+            figure.moveLeft();
+        } else if (Key.isPressed(Key.RIGHT)) {
+            figure.moveRight();
+        }
+        
     }
 
     static function main() {

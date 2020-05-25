@@ -1,7 +1,7 @@
 package logic;
 
-import model.Figure;
-import model.Block;
+import core.models.Figure;
+import core.models.Block;
 
 class FigureBuilder {
     public static function getBlue(pool: BlockPool, x: Int, y: Int) {

@@ -1,4 +1,4 @@
-package contracts;
+package core.contracts;
 
 @:generic
 interface Placeable<T> {

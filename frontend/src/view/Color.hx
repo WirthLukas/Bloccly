@@ -1,6 +1,6 @@
-package model;
+package view;
 
-enum FigureType {
+enum Color {
     Orange;
     Blue;
     DarkBlue;

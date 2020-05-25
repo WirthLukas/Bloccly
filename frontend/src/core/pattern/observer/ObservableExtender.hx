@@ -1,4 +1,4 @@
-package pattern.observer;
+package core.pattern.observer;
 
 class ObservableExtender {
     static private var observalbes: Map<Observable, Array<Observer>> = new Map();
