@@ -43,7 +43,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = FigureBuilder.getOrange(pool, 10, 0);
+        figure = FigureBuilder.getCyan(pool, 10, 0);
     }
 
     private function log(text: String) {
@@ -73,6 +73,8 @@ class Game extends hxd.App {
             figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
             figure.moveRight();
+        } else if (Key.isPressed(Key.UP)) {
+            figure.rotate();
         }
     }
 
