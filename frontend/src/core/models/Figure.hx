@@ -9,6 +9,12 @@ class Figure implements Observable {
     private var originPos: Int;
     private var shouldRotate: Bool;
 
+    /**
+     * Creates a figure which can move the given blocks
+     * @param blocks the blocks wich defines that figure
+     * @param originPos the block's position in the array. This figure gets rotated around that block
+     * @param shouldRotate should this figure be able to rotate (maybe not for squares)
+     */
     public function new(blocks: Array<Block>, originPos: Int = 0, shouldRotate: Bool = true) {
         this.blocks = blocks;
         this.originPos = originPos;
