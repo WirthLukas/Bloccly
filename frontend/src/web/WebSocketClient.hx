@@ -21,7 +21,7 @@ class WebSocketClient {
             trace("message: "+message);
         }
 
-        //New Thread -> WebSocketClient is checking for Messages from URL
+        //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
         sys.thread.Thread.create(() -> {
             while (true) {
@@ -30,8 +30,6 @@ class WebSocketClient {
             }
         });
         #end
-
-        
     }
 
     public function sendMessage(message: String){
