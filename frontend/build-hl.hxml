@@ -1,0 +1,6 @@
+-lib heaps
+-lib hlsdl
+-lib haxe-ws
+-hl bin/hl/game.hl
+-cp src
+-main Game

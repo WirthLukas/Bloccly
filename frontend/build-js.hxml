@@ -1,0 +1,6 @@
+-lib heaps
+-lib haxe-ws
+-js bin/js/game.js
+-cp src
+-main Game
+-debug
