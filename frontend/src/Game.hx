@@ -1,5 +1,4 @@
 import core.models.Block;
-import format.swf.Writer.ShapeStyleInfo;
 import h2d.Text;
 import hxd.Res;
 import logic.BlockPool;
@@ -18,7 +17,6 @@ class Game extends hxd.App {
     private var pool: BlockPool;
     private var tf: Text;
     private var i = 0;
-    @:volatile
     private var wsClient: WebSocketClient;
 
     public function new() {
