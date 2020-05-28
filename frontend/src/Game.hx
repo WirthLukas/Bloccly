@@ -1,3 +1,4 @@
+import core.models.Block;
 import h2d.Text;
 import hxd.Res;
 import logic.BlockPool;
@@ -19,11 +20,13 @@ class Game extends hxd.App {
     public function new() {
         super();
         pool = new BlockPool();
-        pool.setAddListener(block -> {
-            new BlockTile(block, s2d);
-            // i++;
-            // log("" + i);
-        });
+        // pool.setAddListener(block -> {
+        //     new BlockTile(block, s2d);
+        //     // i++;
+        //     // log("" + i);
+        // });
+
+        pool.onAdded = block -> new BlockTile(block, s2d);
     }
 
     override function init() {
@@ -43,7 +46,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = FigureBuilder.getCyan(pool, 10, 0);
+        figure = FigureBuilder.getPurple(pool, 10, 0);
     }
 
     private function log(text: String) {

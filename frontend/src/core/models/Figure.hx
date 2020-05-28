@@ -33,27 +33,24 @@ class Figure implements Observable {
             // its simply a normal vector rotation to the right
             // origin is the block of the figure. This figure gets rotated around this block
             // the new positions of the blocks (based on the origins), are added to the origin's position
-            block.setPosition(origin.x + (origin.y - block.y), origin.y - (origin.x - block.x));
+            // block.setPosition(origin.x + (origin.y - block.y), origin.y - (origin.x - block.x));
+
+            // a simpler version of the above formula
+            block.setPosition(origin.x + origin.y - block.y, origin.y - origin.x + block.x);
         }
 
         // this.notify(null);
     }
 
-    public function moveDown() {
-        for (block in blocks) {
+    public function moveDown()
+        for (block in blocks)
             block.setPosition(block.x, block.y + 1);
-        }
-    }
-
-    public function moveLeft() {
-        for (block in blocks) {
+    
+    public function moveLeft()
+        for (block in blocks)
             block.setPosition(block.x - 1, block.y);
-        }
-    }
 
-    public function moveRight() {
-        for (block in blocks) {
+    public function moveRight()
+        for (block in blocks)
             block.setPosition(block.x + 1, block.y);
-        }
-    }
 }
