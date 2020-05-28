@@ -1,3 +1,4 @@
+import core.models.Block;
 import format.swf.Writer.ShapeStyleInfo;
 import h2d.Text;
 import hxd.Res;
@@ -23,19 +24,34 @@ class Game extends hxd.App {
     public function new() {
         super();
         pool = new BlockPool();
-        pool.setAddListener(block -> {
-            new BlockTile(block, s2d);
-            // i++;
-            // log("" + i);
-        });
+        // pool.setAddListener(block -> {
+        //     new BlockTile(block, s2d);
+        //     // i++;
+        //     // log("" + i);
+        // });
+
+        pool.onAdded = block -> new BlockTile(block, s2d);
     }
 
     override function init() {
         tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
         
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
+        /*var tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
+        tf.text = "Hello World !";
 
-        figure = FigureBuilder.getBlue(pool, 10, 0);
+        b = new Bitmap(Tile.fromColor(0xFF0000, 60, 60), s2d);
+        b.setPosition(100, 100);
+        b.tile.setCenterRatio();    // configure to rotate around itself
+
+        var i = new h2d.Interactive(b.tile.width, b.tile.height, b);
+        i.onOver = _ -> b.alpha = 0.5;
+        i.onOut = _ -> b.alpha = 1;
+        var g = new h2d.Graphics(s2d);
+        g.beginFill(0xFF00FF, .5);
+        g.drawCircle(200, 200, 100);*/
+    
+        figure = FigureBuilder.getPurple(pool, 10, 0);
+        wsClient = new WebSocketClient("wss://echo.websocket.org");
     }
 
     private function log(text: String) {
@@ -51,6 +67,8 @@ class Game extends hxd.App {
             figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
             figure.moveRight();
+        } else if (Key.isPressed(Key.UP)) {
+            figure.rotate();
         }
     }
 
