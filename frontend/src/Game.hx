@@ -17,6 +17,7 @@ class Game extends hxd.App {
     private var pool: BlockPool;
     private var tf: Text;
     private var i = 0;
+    @:volatile
     private var wsClient: WebSocketClient;
 
     public function new() {
@@ -48,8 +49,8 @@ class Game extends hxd.App {
     
         //wsClient.testConnection(tf);
 
-        wsClient = new WebSocketClient("wss://echo.websocket.org:8000", tf);
-        wsClient.openWebSocket();
+        wsClient = new WebSocketClient("wss://echo.websocket.org");
+
         figure = FigureBuilder.getBlue(pool, 10, 0);
     }
 
@@ -60,20 +61,6 @@ class Game extends hxd.App {
     override function update(dt:Float) {
         super.update(dt);
 
-        // b.rotation += 0.01;
-
-        /*if (Key.isPressed(Key.LEFT)) {
-            //block.x -= 900 * dt;
-        } else if (Key.isPressed(Key.RIGHT)) {
-            //block.x += 900 * dt;
-        }
-
-        if (Key.isPressed(Key.UP)) {
-            // block.rotate(Math.PI / 2);
-        } else if (Key.isPressed(Key.DOWN)) {
-            // block.y += 900 * dt;
-        }*/
-
         if (Key.isPressed(Key.DOWN)) {
             figure.moveDown();
         } else if (Key.isPressed(Key.LEFT)) {
@@ -81,8 +68,6 @@ class Game extends hxd.App {
         } else if (Key.isPressed(Key.RIGHT)) {
             figure.moveRight();
         }
-        wsClient.sendMessage("testNachricht");
-        
     }
 
     static function main() {

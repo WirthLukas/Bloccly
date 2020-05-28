@@ -5,39 +5,42 @@ import haxe.net.WebSocket;
 class WebSocketClient {
 
     private var ws: WebSocket;
+    private var isOpen: Bool = false;
 
-    public function new (webSocketURL: String, tf: h2d.Text){
+    public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
+        trace("testing");
         ws.onopen = function() {
-            tf.text = "open";
+            this.isOpen = true;
+            trace("open");
             ws.sendString('hello friend');
         }
         
         ws.onmessageString = function(message){
-            tf.text="message from server!" + message;
+            trace("message: "+message);
         }
 
-        //tf.text = "message";
-        
-        /*#if sys
-        while (true) {
-            ws.process();
-            Sys.sleep(0.1);
-        }
-        #end*/
-    }
+        //New Thread -> WebSocketClient is checking for Messages from URL
+        #if sys
+        sys.thread.Thread.create(() -> {
+            while (true) {
+                ws.process();
+                Sys.sleep(0.1);
+            }
+        });
+        #end
 
-    public function openWebSocket(){
-        trace("p");
         
     }
 
     public function sendMessage(message: String){
-        ws.sendString(message);
+        if(isOpen){
+            ws.sendString(message);
+        } 
+        else {
+            trace("Client is not yet open");
+        }
     }
-
-
-
     
 }
