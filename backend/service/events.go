@@ -4,6 +4,13 @@ import "encoding/json"
 
 type EventHandler func(*Event)
 
+/*
+{
+	"event": "message",
+	"data": "some data",
+}
+ */
+
 type Event struct {
 	Name string      `json:"event"`
 	Data interface{} `json:"data"`

@@ -1,10 +1,13 @@
 package service
 
 import (
-	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+)
+
+const (
+	MaxMsgSize = 5000
 )
 
 var upgrader = websocket.Upgrader{
@@ -25,68 +28,69 @@ type WebSocket struct {
 func NewWebSocket(w http.ResponseWriter, r *http.Request) (*WebSocket, error) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatalf("[ERROR] Socket connection failed %v", err)
 		return nil, err
 	}
 
 	ws := &WebSocket{
-		Conn: conn,
-		Out: make(chan []byte),
-		In: make(chan []byte),
+		Conn:   conn,
+		Out:    make(chan []byte),
+		In:     make(chan []byte),
 		Events: make(map[string]EventHandler),
 	}
 
 	go ws.Reader()
 	go ws.Writer()
+	return ws, nil
 }
 
 func (ws *WebSocket) Reader() {
 	defer func() {
-		ws.Conn.Close()
+		_ = ws.Conn.Close()
 	}()
+	ws.Conn.SetReadLimit(MaxMsgSize)
 	for {
 		_, message, err := ws.Conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("WS Message Error: %v", err)
+				log.Fatalf("[ERROR]:  %v", err)
 			}
 			break
 		}
 		event, err := NewEventFromRaw(message)
 		if err != nil {
-			log.Fatalf("Error parsing message: %v", err)
+			log.Panicf("[ERROR]: %v", err)
 		} else {
-			fmt.Printf("Message: %v", event)
+			log.Printf("[MSG]: Eventname %v", event.Name)
 		}
 		if action, ok := ws.Events[event.Name]; ok {
 			action(event)
 		}
-		//TODO: Process data
 	}
 }
 
 func (ws *WebSocket) Writer() {
 	for {
 		select {
-			case message, ok := <- ws.Out:
-				if !ok {
-					ws.Conn.WriteMessage(websocket.CloseMessage, make([]byte, 0))
-					return
-				}
-				w, err := ws.Conn.NextWriter(websocket.TextMessage)
-				if err != nil {
-					return
-				}
-				_, err = w.Write(message)
-				if err != nil {
-					log.Fatal(err)
-					return
-				}
-				err = w.Close()
-				if err != nil {
-					log.Fatal(err)
-					return
-				}
+		case message, ok := <- ws.Out:
+			if !ok {
+				_ = ws.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				return
+			}
+			w, err := ws.Conn.NextWriter(websocket.TextMessage)
+			if err != nil {
+				return
+			}
+			_, err = w.Write(message)
+			if err != nil {
+				log.Fatalf("[ERROR]: Write message failed %v", err)
+			}
+			_ = w.Close()
 		}
 	}
+}
+
+func (ws *WebSocket) On(eventName string, action EventHandler) *WebSocket {
+	ws.Events[eventName] = action
+	return ws
 }
