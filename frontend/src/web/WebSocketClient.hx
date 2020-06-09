@@ -12,7 +12,6 @@ class WebSocketClient implements Observer{
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
-        trace("testing");
         ws.onopen = function() {
             this.isOpen = true;
         }
@@ -43,7 +42,7 @@ class WebSocketClient implements Observer{
     }
 
     public function update(sender: Observable, ?data: Any){
-        
+        trace("WebSocketClient update: " + data +" from " + sender);
     }
     
 }

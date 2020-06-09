@@ -47,9 +47,11 @@ class Game extends hxd.App {
         var g = new h2d.Graphics(s2d);
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
+
+        wsClient = new WebSocketClient("wss://echo.websocket.org");
     
         figure = FigureBuilder.getPurple(pool, 10, 0);
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
+        figure.addObserver(wsClient);
     }
 
     private function log(text: String) {
@@ -61,6 +63,7 @@ class Game extends hxd.App {
 
         if (Key.isPressed(Key.DOWN)) {
             figure.moveDown();
+            figure.notify("down");
         } else if (Key.isPressed(Key.LEFT)) {
             figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
