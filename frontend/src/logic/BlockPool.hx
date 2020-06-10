@@ -9,7 +9,7 @@ class BlockPool implements Observable {
     /**
      * Blocks, which are currently used
      */
-    private var usedBlocks: Array<Block> = [];
+    public var usedBlocks(default, null): Array<Block> = [];
 
     /**
      * Blocks, which are ready for use
@@ -35,6 +35,15 @@ class BlockPool implements Observable {
         if (!result) throw 'there is no block';
         freeBlocks.push(block);
         onFreed(block);
+    }
+
+    public function freeRow(row: Int){
+        var blocksOfRow = usedBlocks.filter((block) -> block.x == row);
+        for(block in blocksOfRow){
+            usedBlocks.remove(block);
+            freeBlocks.push(block);
+            onFreed(block);
+        }
     }
 
     public dynamic function onAdded(block: Block) { }

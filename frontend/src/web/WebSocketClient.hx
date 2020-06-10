@@ -1,8 +1,10 @@
 package web;
 
+import core.pattern.observer.Observer;
+import core.pattern.observer.Observable;
 import haxe.net.WebSocket;
 
-class WebSocketClient {
+class WebSocketClient implements Observer{
 
     private var ws: WebSocket;
     private var isOpen: Bool = false;
@@ -10,13 +12,11 @@ class WebSocketClient {
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
-        trace("testing");
         ws.onopen = function() {
             this.isOpen = true;
-            trace("open");
-            ws.sendString('hello friend');
         }
         
+        //TODO: Handle incoming message
         ws.onmessageString = function(message){
             trace("message: "+message);
         }
@@ -39,6 +39,10 @@ class WebSocketClient {
         else {
             trace("Client is not yet open");
         }
+    }
+
+    public function update(sender: Observable, ?data: Any){
+        trace("WebSocketClient update: " + data + " from " + sender);
     }
     
 }

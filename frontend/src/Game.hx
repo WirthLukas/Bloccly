@@ -1,5 +1,4 @@
 import core.models.Block;
-import format.swf.Writer.ShapeStyleInfo;
 import h2d.Text;
 import hxd.Res;
 import logic.BlockPool;
@@ -8,6 +7,7 @@ import logic.FigureBuilder;
 import view.BlockTile;
 import hxd.Key;
 import web.WebSocketClient;
+import logic.GameFieldChecker;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
@@ -18,8 +18,8 @@ class Game extends hxd.App {
     private var pool: BlockPool;
     private var tf: Text;
     private var i = 0;
-    @:volatile
     private var wsClient: WebSocketClient;
+    private var gameFieldChecker: GameFieldChecker;
 
     public function new() {
         super();
@@ -31,6 +31,9 @@ class Game extends hxd.App {
         // });
 
         pool.onAdded = block -> new BlockTile(block, s2d);
+
+        wsClient = new WebSocketClient("wss://echo.websocket.org");
+        gameFieldChecker = new GameFieldChecker();
     }
 
     override function init() {
@@ -51,7 +54,7 @@ class Game extends hxd.App {
         g.drawCircle(200, 200, 100);*/
     
         figure = FigureBuilder.getPurple(pool, 10, 0);
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
+        figure.addObserver(wsClient);        
     }
 
     private function log(text: String) {
@@ -70,6 +73,8 @@ class Game extends hxd.App {
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }
+
+        gameFieldChecker.checkRowFull(pool.usedBlocks);
     }
 
     static function main() {
