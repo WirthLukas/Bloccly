@@ -7,6 +7,7 @@ import logic.FigureBuilder;
 import view.BlockTile;
 import hxd.Key;
 import web.WebSocketClient;
+import logic.GameFieldChecker;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
@@ -18,6 +19,7 @@ class Game extends hxd.App {
     private var tf: Text;
     private var i = 0;
     private var wsClient: WebSocketClient;
+    private var gameFieldChecker: GameFieldChecker;
 
     public function new() {
         super();
@@ -29,6 +31,9 @@ class Game extends hxd.App {
         // });
 
         pool.onAdded = block -> new BlockTile(block, s2d);
+
+        wsClient = new WebSocketClient("wss://echo.websocket.org");
+        gameFieldChecker = new GameFieldChecker();
     }
 
     override function init() {
@@ -47,11 +52,9 @@ class Game extends hxd.App {
         var g = new h2d.Graphics(s2d);
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
-
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
     
         figure = FigureBuilder.getPurple(pool, 10, 0);
-        figure.addObserver(wsClient);
+        figure.addObserver(wsClient);        
     }
 
     private function log(text: String) {
@@ -63,7 +66,6 @@ class Game extends hxd.App {
 
         if (Key.isPressed(Key.DOWN)) {
             figure.moveDown();
-            figure.notify("down");
         } else if (Key.isPressed(Key.LEFT)) {
             figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
@@ -71,6 +73,8 @@ class Game extends hxd.App {
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }
+
+        gameFieldChecker.checkRowFull(pool.usedBlocks);
     }
 
     static function main() {

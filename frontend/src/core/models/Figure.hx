@@ -39,18 +39,25 @@ class Figure implements Observable {
             block.setPosition(origin.x + origin.y - block.y, origin.y - origin.x + block.x);
         }
 
-        // this.notify(null);
+        this.notify("rotate");
     }
 
-    public function moveDown()
+    public function moveDown(){
         for (block in blocks)
             block.setPosition(block.x, block.y + 1);
-    
-    public function moveLeft()
+        this.notify("down");
+    }
+
+    public function moveLeft(){
         for (block in blocks)
             block.setPosition(block.x - 1, block.y);
+        this.notify("left");
+    }
 
-    public function moveRight()
+    public function moveRight(){
         for (block in blocks)
             block.setPosition(block.x + 1, block.y);
+        this.notify("right");
+    }
+
 }

@@ -42,7 +42,7 @@ class WebSocketClient implements Observer{
     }
 
     public function update(sender: Observable, ?data: Any){
-        trace("WebSocketClient update: " + data +" from " + sender);
+        trace("WebSocketClient update: " + data + " from " + sender);
     }
     
 }
