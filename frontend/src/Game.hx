@@ -1,11 +1,12 @@
 import core.models.Block;
 import h2d.Text;
 import hxd.Res;
-import logic.BlockPool;
+import hxd.Key;
+
 import core.models.Figure;
+import logic.BlockPool;
 import logic.FigureBuilder;
 import view.BlockTile;
-import hxd.Key;
 import web.WebSocketClient;
 import logic.GameFieldChecker;
 
@@ -20,6 +21,9 @@ class Game extends hxd.App {
     private var i = 0;
     private var wsClient: WebSocketClient;
     private var gameFieldChecker: GameFieldChecker;
+
+    private var updateCount: Int = 0;
+    private var resetCount: Int = 50;
 
     public function new() {
         super();
@@ -74,8 +78,28 @@ class Game extends hxd.App {
             figure.rotate();
         }
 
+        updateCount++;
+
+        if (updateCount == resetCount) {
+            updateCount = 0;
+            figure.moveDown();
+        }
+
         gameFieldChecker.checkRowFull(pool.usedBlocks);
+
     }
+
+    private function newFigureOf(color: view.Color, x: Int, y: Int): Figure
+        return switch color {
+            case Orange: FigureBuilder.getOrange(pool, x, y);
+            case Cyan: FigureBuilder.getCyan(pool, x, y);
+            case Blue: FigureBuilder.getBlue(pool, x, y);
+            case Green: FigureBuilder.getGreen(pool, x, y);
+            case Purple: FigureBuilder.getPurple(pool, x, y);
+            case Red: FigureBuilder.getRed(pool, x, y);
+            case Yellow: FigureBuilder.getYellow(pool, x, y);
+            default: throw "No such type available";
+        }
 
     static function main() {
         Res.initEmbed();
