@@ -1,15 +1,17 @@
 package logic;
 
+import core.pattern.observer.Observer;
 import core.pattern.observer.Observable;
 import core.models.Block;
 
 using utils.ArrayTools;
 
-class BlockPool implements Observable {
+class BlockPool implements Observable 
+                implements Observer {
     /**
      * Blocks, which are currently used
      */
-    private var usedBlocks: Array<Block> = [];
+    public var usedBlocks(default, null): Array<Block> = [];
 
     /**
      * Blocks, which are ready for use
@@ -35,6 +37,27 @@ class BlockPool implements Observable {
         if (!result) throw 'there is no block';
         freeBlocks.push(block);
         onFreed(block);
+    }
+
+    public function freeRow(row: Int){
+        var blocksOfRow = usedBlocks.filter(block -> block.y == row);
+        for(block in blocksOfRow){
+            usedBlocks.remove(block);
+            freeBlocks.push(block);
+            onFreed(block);
+        }
+    }
+
+    public function update(sender: Observable, ?data: Any){
+        if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
+            trace("Rows are full " + data);
+            var rows: Array<Bool> = cast data;
+            for(i in 0...rows.length)
+                if(rows[i]){
+                    trace(i);
+                    freeRow(i);
+                }
+        }
     }
 
     public dynamic function onAdded(block: Block) { }

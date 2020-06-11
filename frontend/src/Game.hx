@@ -1,13 +1,14 @@
 import core.models.Block;
-import format.swf.Writer.ShapeStyleInfo;
 import h2d.Text;
 import hxd.Res;
-import logic.BlockPool;
+import hxd.Key;
+
 import core.models.Figure;
+import logic.BlockPool;
 import logic.FigureBuilder;
 import view.BlockTile;
-import hxd.Key;
 import web.WebSocketClient;
+import logic.GameFieldChecker;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
@@ -18,8 +19,11 @@ class Game extends hxd.App {
     private var pool: BlockPool;
     private var tf: Text;
     private var i = 0;
-    @:volatile
     private var wsClient: WebSocketClient;
+    private var gameFieldChecker: GameFieldChecker;
+
+    private var updateCount: Int = 0;
+    private var resetCount: Int = 50;
 
     public function new() {
         super();
@@ -31,6 +35,11 @@ class Game extends hxd.App {
         // });
 
         pool.onAdded = block -> new BlockTile(block, s2d);
+
+        wsClient = new WebSocketClient("wss://echo.websocket.org");
+        gameFieldChecker = new GameFieldChecker();
+        gameFieldChecker.addObserver(wsClient);
+        gameFieldChecker.addObserver(pool);
     }
 
     override function init() {
@@ -50,8 +59,8 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = FigureBuilder.getPurple(pool, 10, 0);
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
+        figure = FigureBuilder.getYellow(pool, 10, 0);
+        figure.addObserver(wsClient);        
     }
 
     private function log(text: String) {
@@ -70,7 +79,36 @@ class Game extends hxd.App {
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }
+
+        updateCount++;
+
+        if (updateCount == resetCount) {
+            updateCount = 0;
+            figure.moveDown();
+        }
+      
+        if(gameFieldChecker.checkBlockReachesBottom(figure, pool.usedBlocks)){
+            //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
+            gameFieldChecker.checkRowFull(pool.usedBlocks);
+            //Create new Figure
+            figure = FigureBuilder.getYellow(pool, 5, 5);
+            figure.addObserver(wsClient);
+            trace("Block reached Bottom");
+        }   
+
     }
+
+    private function newFigureOf(color: view.Color, x: Int, y: Int): Figure
+        return switch color {
+            case Orange: FigureBuilder.getOrange(pool, x, y);
+            case Cyan: FigureBuilder.getCyan(pool, x, y);
+            case Blue: FigureBuilder.getBlue(pool, x, y);
+            case Green: FigureBuilder.getGreen(pool, x, y);
+            case Purple: FigureBuilder.getPurple(pool, x, y);
+            case Red: FigureBuilder.getRed(pool, x, y);
+            case Yellow: FigureBuilder.getYellow(pool, x, y);
+            default: throw "No such type available";
+        }
 
     static function main() {
         Res.initEmbed();
