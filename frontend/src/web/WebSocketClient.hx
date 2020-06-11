@@ -30,12 +30,20 @@ class WebSocketClient implements Observer{
         });
         #end
     }
-
-    public function sendMessage(message: String)
+          
+    private function sendMessage(message: String)
         if (isOpen) ws.sendString(message);
         else trace("Client is not yet open");
 
     public function update(sender: Observable, ?data: Any){
         trace("WebSocketClient update: " + data + " from " + sender);
+        if(Type.getClassName(Type.getClass(sender)) == "core.models.Figure"){
+            trace("Figure moved " + data);
+            //sendMessage("Figure moved " + data);
+        }
+        if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
+            trace("Rows are full " + data);
+            //sendMessage("Rows are full: " + data);
+        }
     }
 }
