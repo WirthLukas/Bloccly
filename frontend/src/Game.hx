@@ -66,7 +66,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = newFigureOf(Cyan, 5, 0);
+        figure = newFigureOf(nextColor, 5, 0);
         figure.addObserver(wsClient);        
     }
 
