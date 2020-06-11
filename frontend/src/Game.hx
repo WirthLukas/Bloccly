@@ -14,6 +14,9 @@ using core.pattern.observer.ObservableExtender;
 
 class Game extends hxd.App {
 
+    public static inline var FIELD_WIDTH = 10;
+    public static inline var FIELD_HEIGHT = 21;
+
     private var figure: Figure;
     private var pool: BlockPool;
     private var tf: Text;
@@ -31,6 +34,8 @@ class Game extends hxd.App {
 
         wsClient = new WebSocketClient("wss://echo.websocket.org");
         gameFieldChecker = new GameFieldChecker();
+        gameFieldChecker.addObserver(wsClient);
+        gameFieldChecker.addObserver(pool);
     }
 
     override function init() {
@@ -50,7 +55,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = FigureBuilder.getPurple(pool, 10, 0);
+        figure = newFigureOf(Cyan, 5, 0);
         figure.addObserver(wsClient);        
     }
 
@@ -64,9 +69,13 @@ class Game extends hxd.App {
         if (Key.isPressed(Key.DOWN)) {
             figure.moveDown();
         } else if (Key.isPressed(Key.LEFT)) {
-            figure.moveLeft();
+            if(gameFieldChecker.checkBlockCollision(figure.blocks, "left", pool.usedBlocks))
+                figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
-            figure.moveRight();
+            if(gameFieldChecker.checkBlockCollision(figure.blocks, "right", pool.usedBlocks)){
+                figure.moveRight();
+            }
+                
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }
@@ -77,10 +86,15 @@ class Game extends hxd.App {
             updateCount = 0;
             figure.moveDown();
         }
-
-        // check if figure reached the bottom
-        // if yes destry the figure
-        gameFieldChecker.checkRowFull(pool.usedBlocks);
+      
+        if(gameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)){
+            //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
+            gameFieldChecker.checkRowFull(pool.usedBlocks);
+            //Create new Figure
+            figure = newFigureOf(Cyan, 5, 0);
+            figure.addObserver(wsClient);
+            trace("Block reached Bottom");
+        }   
     }
 
     private function newFigureOf(color: view.Color, x: Int, y: Int): Figure
