@@ -34,6 +34,7 @@ class Game extends hxd.App {
 
         wsClient = new WebSocketClient("wss://echo.websocket.org");
         gameFieldChecker = new GameFieldChecker();
+        gameFieldChecker.addObserver(wsClient);
     }
 
     override function init() {
@@ -72,6 +73,12 @@ class Game extends hxd.App {
             figure.moveRight();
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
+        }
+
+        if(gameFieldChecker.checkBlockReachesBottom(figure, pool.usedBlocks)){
+            //Create new Figure
+            figure = FigureBuilder.getRed(pool, 5, 5);
+            trace("Block reached Bottom");
         }
 
         gameFieldChecker.checkRowFull(pool.usedBlocks);
