@@ -11,15 +11,20 @@ class GameFieldChecker implements Observable {
     public function new (){
     }
 
-    public function checkBlockStaysInBounds(blocks: Array<Block>, move: String): Bool{
-
+    public function checkBlockCollision(blocks: Array<Block>, move: String, usedBlocks: Array<Block>): Bool{
         for(block in blocks){
-            //Left bound
-            if(block.x == 0 && move == "left")
+            //Left bound or right bound
+            if((block.x == 0 && move == "left") 
+                || (block.x == Game.FIELD_WIDTH - 1 && move == "right"))
                 return false;
-            //Right bound
-            if(block.x == Game.FIELD_WIDTH - 1 && move == "right")
-                return false;
+
+            //Another Block to the left or right
+            for(usedBlock in usedBlocks){
+                if((block.x - 1 == usedBlock.x && block.y == usedBlock.y)
+                    || (block.x + 1 == usedBlock.x && block.y == usedBlock.y))
+                    if(blocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0)
+                        return false;             
+            }
         }
 
         return true;
@@ -46,8 +51,8 @@ class GameFieldChecker implements Observable {
 
     //Returns true, if a Block from a Figure reaches the bottom of the playing field...
     //... or the edge of another block
-    public function checkBlockReachesBottom(figure: Figure, usedBlocks: Array<Block>): Bool{
-        for(block in figure.blocks){
+    public function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
+        for(block in figureBlocks){
             //race("CheckBlockReachesBottom Y is " + block.y);
             if(block.y >= 10) //Bottom of playing field (Game.FIELD_HEIGHT), 10 IS ONLY FOR TESTING PURPOSES
                 return true;
@@ -56,7 +61,7 @@ class GameFieldChecker implements Observable {
                     //If the Block is one above a used Block on the y Axis
                     //Blocks which are from the Figure are filtered out
                     if(block.y + 1 == usedBlock.y && block.x == usedBlock.x)
-                        if(figure.blocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0)
+                        if(figureBlocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0)
                             return true;   
                 }
         }

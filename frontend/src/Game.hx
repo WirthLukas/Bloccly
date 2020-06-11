@@ -62,7 +62,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = FigureBuilder.getYellow(pool, 10, 0);
+        figure = newFigureOf(Yellow, 5, 0);
         figure.addObserver(wsClient);        
     }
 
@@ -76,11 +76,13 @@ class Game extends hxd.App {
         if (Key.isPressed(Key.DOWN)) {
             figure.moveDown();
         } else if (Key.isPressed(Key.LEFT)) {
-            if(gameFieldChecker.checkBlockStaysInBounds(figure.blocks, "left"))
+            if(gameFieldChecker.checkBlockCollision(figure.blocks, "left", pool.usedBlocks))
                 figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
-            if(gameFieldChecker.checkBlockStaysInBounds(figure.blocks, "right"))
+            if(gameFieldChecker.checkBlockCollision(figure.blocks, "right", pool.usedBlocks)){
                 figure.moveRight();
+            }
+                
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }
@@ -92,11 +94,11 @@ class Game extends hxd.App {
             figure.moveDown();
         }
       
-        if(gameFieldChecker.checkBlockReachesBottom(figure, pool.usedBlocks)){
+        if(gameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)){
             //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
             gameFieldChecker.checkRowFull(pool.usedBlocks);
             //Create new Figure
-            figure = FigureBuilder.getYellow(pool, 5, 5);
+            figure = newFigureOf(Yellow, 5, 0);
             figure.addObserver(wsClient);
             trace("Block reached Bottom");
         }   

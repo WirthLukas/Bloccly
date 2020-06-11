@@ -22,7 +22,7 @@ class BlockPool implements Observable
 
     public function getBlock(): Block {
         // if there are no free blocks, which could be used,
-        // we geneare a new one
+        // we generate a new one
         var block: Block = freeBlocks.isEmpty()
             ? new Block(0, 0)
             : freeBlocks.pop();
