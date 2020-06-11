@@ -35,6 +35,7 @@ class Game extends hxd.App {
         wsClient = new WebSocketClient("wss://echo.websocket.org");
         gameFieldChecker = new GameFieldChecker();
         gameFieldChecker.addObserver(wsClient);
+        gameFieldChecker.addObserver(pool);
     }
 
     override function init() {
@@ -54,7 +55,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = FigureBuilder.getPurple(pool, 10, 0);
+        figure = FigureBuilder.getYellow(pool, 10, 0);
         figure.addObserver(wsClient);        
     }
 
@@ -76,12 +77,13 @@ class Game extends hxd.App {
         }
 
         if(gameFieldChecker.checkBlockReachesBottom(figure, pool.usedBlocks)){
+            //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
+            gameFieldChecker.checkRowFull(pool.usedBlocks);
             //Create new Figure
-            figure = FigureBuilder.getRed(pool, 5, 5);
+            figure = FigureBuilder.getYellow(pool, 5, 5);
+            figure.addObserver(wsClient);
             trace("Block reached Bottom");
-        }
-
-        gameFieldChecker.checkRowFull(pool.usedBlocks);
+        }   
     }
 
     static function main() {

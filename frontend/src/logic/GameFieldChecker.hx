@@ -25,7 +25,10 @@ class GameFieldChecker implements Observable {
         //If a given row contains a one, it shows, that this row is full
         var fullRows = rows.map(num -> num/10 == 1 ? true : false);
 
-        fullRows.filter(row -> row).length >= 1 ? this.notify(fullRows) : return;
+        //Notifies Observers, if at least one row is filled
+        if(fullRows.filter(row -> row).length >= 1){
+            this.notify(fullRows);
+        }
     }    
 
     //Returns true, if a Block from a Figure reaches the bottom of the playing field...
@@ -33,8 +36,9 @@ class GameFieldChecker implements Observable {
     public function checkBlockReachesBottom(figure: Figure, usedBlocks: Array<Block>): Bool{
         for(block in figure.blocks){
             //race("CheckBlockReachesBottom Y is " + block.y);
-            if(block.y >= 10) //Bottom of playing field
+            if(block.y >= 10){ //Bottom of playing field
                 return true;
+            }
             else {
                 for(usedBlock in usedBlocks){
                     //If the Block is one above a used Block on the y Axis
@@ -42,6 +46,7 @@ class GameFieldChecker implements Observable {
                     if(block.y + 1 == usedBlock.y && block.x == usedBlock.x)
                         if(figure.blocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0){
                             trace("Length: " + figure.blocks.filter(figureBlock -> figureBlock.x != usedBlock.x && figureBlock.y != usedBlock.y).length);
+                            checkRowFull(usedBlocks);
                             return true;
                         }
                 }
@@ -51,6 +56,4 @@ class GameFieldChecker implements Observable {
 
         return false;
     }
-
-
 }

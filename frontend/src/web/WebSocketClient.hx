@@ -1,6 +1,5 @@
 package web;
 
-import core.models.Figure;
 import core.pattern.observer.Observer;
 import core.pattern.observer.Observable;
 import haxe.net.WebSocket;
@@ -33,7 +32,7 @@ class WebSocketClient implements Observer{
         #end
     }
 
-    public function sendMessage(message: String){
+    private function sendMessage(message: String){
         if(isOpen){
             ws.sendString(message);
         } 
@@ -45,10 +44,12 @@ class WebSocketClient implements Observer{
     public function update(sender: Observable, ?data: Any){
         trace("WebSocketClient update: " + data + " from " + sender);
         if(Type.getClassName(Type.getClass(sender)) == "core.models.Figure"){
-            sendMessage("Figure moved " + data);
+            trace("Figure moved " + data);
+            //sendMessage("Figure moved " + data);
         }
         if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
-            sendMessage("Rows are full: " + data);
+            trace("Rows are full " + data);
+            //sendMessage("Rows are full: " + data);
         }
     }
     

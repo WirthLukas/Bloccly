@@ -1,11 +1,13 @@
 package logic;
 
+import core.pattern.observer.Observer;
 import core.pattern.observer.Observable;
 import core.models.Block;
 
 using utils.ArrayTools;
 
-class BlockPool implements Observable {
+class BlockPool implements Observable 
+                implements Observer {
     /**
      * Blocks, which are currently used
      */
@@ -38,11 +40,23 @@ class BlockPool implements Observable {
     }
 
     public function freeRow(row: Int){
-        var blocksOfRow = usedBlocks.filter((block) -> block.x == row);
+        var blocksOfRow = usedBlocks.filter(block -> block.y == row);
         for(block in blocksOfRow){
             usedBlocks.remove(block);
             freeBlocks.push(block);
             onFreed(block);
+        }
+    }
+
+    public function update(sender: Observable, ?data: Any){
+        if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
+            trace("Rows are full " + data);
+            var rows: Array<Bool> = cast data;
+            for(i in 0...rows.length)
+                if(rows[i]){
+                    trace(i);
+                    freeRow(i);
+                }
         }
     }
 
