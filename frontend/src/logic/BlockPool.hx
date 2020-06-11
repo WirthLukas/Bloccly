@@ -6,8 +6,7 @@ import core.models.Block;
 
 using utils.ArrayTools;
 
-class BlockPool implements Observable 
-                implements Observer {
+class BlockPool implements Observable {
     /**
      * Blocks, which are currently used
      */
@@ -46,18 +45,17 @@ class BlockPool implements Observable
         }
     }
 
-    //BlockPool gets notified by GameFieldChecker once at least one row is full
-    //The BlockPool then proceeds to free the cleared Rows
-    public function update(sender: Observable, ?data: Any){
-        if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
-            trace("Rows are full " + data);
-            var rows: Array<Bool> = cast data;
-            for(i in 0...rows.length)
-                if(rows[i])
-                    freeRow(i);
-        }
-    }
-
+    /**
+     * [Description]
+     * @param moving all blocks, that are positioned above this row
+     * @param dx amount to move in the horizontal direction (negative values means moving to the left)
+     * @param dy amount to move in the vertical direction (negative values means moving to the top)
+     */
+    public function moveAllBlocksAboveRow(row: Int, dx: Int, dy: Int): Void
+        for (block in usedBlocks)
+            if (block.y <= row && block.y != Game.FIELD_HEIGHT)
+                block.setPosition(block.x + dx, block.y + dy);
+                
     public dynamic function onAdded(block: Block) { }
     public dynamic function onFreed(block: Block) { }
 }

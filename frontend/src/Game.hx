@@ -1,3 +1,6 @@
+import view.ColorProvidable;
+import view.LocalColorProvider;
+import view.Color;
 import h2d.Text;
 import hxd.Res;
 import hxd.Key;
@@ -6,6 +9,7 @@ import core.models.Figure;
 import logic.BlockPool;
 import logic.FigureBuilder;
 import view.BlockTile;
+import view.BlockTilePool;
 import web.WebSocketClient;
 import logic.GameFieldChecker;
 
@@ -18,24 +22,31 @@ class Game extends hxd.App {
     public static inline var FIELD_HEIGHT = 21;
 
     private var figure: Figure;
-    private var pool: BlockPool;
+    private var pool: BlockPool = new BlockPool();
+    private var tilePool: BlockTilePool = new BlockTilePool();
     private var tf: Text;
     private var i = 0;
     private var wsClient: WebSocketClient;
     private var gameFieldChecker: GameFieldChecker;
+    private var colorProvider: ColorProvidable = new LocalColorProvider();
 
     private var updateCount: Int = 0;
     private var resetCount: Int = 50;
+    private var nextColor: Color;
 
     public function new() {
         super();
-        pool = new BlockPool();
-        pool.onAdded = block -> new BlockTile(block, s2d);
+        pool.onAdded = block -> tilePool
+            .getBlockTile(block, s2d)
+            .withColor(nextColor)
+            .setBlock(block)
+            .show();
+
+        pool.onFreed = block -> tilePool.freeOf(block);
+        nextColor = colorProvider.getNextColor();
 
         wsClient = new WebSocketClient("wss://echo.websocket.org");
         gameFieldChecker = new GameFieldChecker();
-        gameFieldChecker.addObserver(wsClient);
-        gameFieldChecker.addObserver(pool);
     }
 
     override function init() {
@@ -55,7 +66,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = newFigureOf(Cyan, 5, 0);
+        figure = newFigureOf(nextColor, 5, 0);
         figure.addObserver(wsClient);        
     }
 
@@ -74,8 +85,7 @@ class Game extends hxd.App {
         } else if (Key.isPressed(Key.RIGHT)) {
             if(gameFieldChecker.checkBlockCollision(figure.blocks, "right", pool.usedBlocks)){
                 figure.moveRight();
-            }
-                
+            }  
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }
@@ -89,9 +99,15 @@ class Game extends hxd.App {
       
         if(gameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)){
             //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
-            gameFieldChecker.checkRowFull(pool.usedBlocks);
+            var fullRows: Array<Bool> = gameFieldChecker.checkRowFull(pool.usedBlocks);
+
+            if (fullRows.map(row -> row).length >= 1) {
+                clearFullRows(fullRows);
+            }
+            
             //Create new Figure
-            figure = newFigureOf(Cyan, 5, 0);
+            nextColor = colorProvider.getNextColor();
+            figure = newFigureOf(nextColor, 5, 0);
             figure.addObserver(wsClient);
             trace("Block reached Bottom");
         }   
@@ -108,6 +124,15 @@ class Game extends hxd.App {
             case Yellow: FigureBuilder.getYellow(pool, x, y);
             default: throw "No such type available";
         }
+
+    private inline function clearFullRows(fullRows: Array<Bool>): Void
+        for(i in 0...fullRows.length)
+            if(fullRows[i]) {
+                trace('free row $i');
+                pool.freeRow(i);
+                pool.moveAllBlocksAboveRow(i, 0, 1);
+            }
+                
 
     static function main() {
         Res.initEmbed();
