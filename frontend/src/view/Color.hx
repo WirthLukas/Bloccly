@@ -2,8 +2,8 @@ package view;
 
 enum Color {
     Orange;
+    Cyan;
     Blue;
-    DarkBlue;
     Green;
     Purple;
     Red;
