@@ -15,6 +15,9 @@ using core.pattern.observer.ObservableExtender;
 
 class Game extends hxd.App {
 
+    public static inline var FIELD_WIDTH = 10;
+    public static inline var FIELD_HEIGHT = 21;
+
     private var figure: Figure;
     private var pool: BlockPool;
     private var tf: Text;
@@ -73,9 +76,11 @@ class Game extends hxd.App {
         if (Key.isPressed(Key.DOWN)) {
             figure.moveDown();
         } else if (Key.isPressed(Key.LEFT)) {
-            figure.moveLeft();
+            if(gameFieldChecker.checkBlockStaysInBounds(figure.blocks, "left"))
+                figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
-            figure.moveRight();
+            if(gameFieldChecker.checkBlockStaysInBounds(figure.blocks, "right"))
+                figure.moveRight();
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }

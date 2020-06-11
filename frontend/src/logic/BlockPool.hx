@@ -53,10 +53,8 @@ class BlockPool implements Observable
             trace("Rows are full " + data);
             var rows: Array<Bool> = cast data;
             for(i in 0...rows.length)
-                if(rows[i]){
-                    trace(i);
+                if(rows[i])
                     freeRow(i);
-                }
         }
     }
 
