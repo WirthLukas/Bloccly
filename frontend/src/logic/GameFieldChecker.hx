@@ -8,7 +8,7 @@ using core.pattern.observer.ObservableExtender;
 
 class GameFieldChecker implements Observable {
 
-    public function new (){
+    public function new() {
     }
 
     public function checkBlockCollision(blocks: Array<Block>, move: String, usedBlocks: Array<Block>): Bool{
@@ -36,9 +36,8 @@ class GameFieldChecker implements Observable {
 
         //Sum of blocks in a given row
         //If a row reaches the same value as Game.FIELD_WIDTH, it is full
-        for(block in blocks){
+        for(block in blocks)
             rows[block.y]++;
-        }
 
         //If a given row contains a one, it shows, that this row is full
         var fullRows = rows.map(num -> num/Game.FIELD_WIDTH == 1 ? true : false);
