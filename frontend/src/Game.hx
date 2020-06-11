@@ -1,3 +1,4 @@
+import view.Color;
 import h2d.Text;
 import hxd.Res;
 import hxd.Key;
@@ -6,6 +7,7 @@ import core.models.Figure;
 import logic.BlockPool;
 import logic.FigureBuilder;
 import view.BlockTile;
+import view.BlockTilePool;
 import web.WebSocketClient;
 import logic.GameFieldChecker;
 
@@ -18,7 +20,8 @@ class Game extends hxd.App {
     public static inline var FIELD_HEIGHT = 21;
 
     private var figure: Figure;
-    private var pool: BlockPool;
+    private var pool: BlockPool = new BlockPool();
+    private var tilePool: BlockTilePool = new BlockTilePool();
     private var tf: Text;
     private var i = 0;
     private var wsClient: WebSocketClient;
@@ -29,8 +32,12 @@ class Game extends hxd.App {
 
     public function new() {
         super();
-        pool = new BlockPool();
-        pool.onAdded = block -> new BlockTile(block, s2d);
+        pool.onAdded = block -> tilePool.getBlockTile(block, s2d)
+            .withColor(Color.Cyan)
+            .setBlock(block)
+            .show();
+
+        pool.onFreed = block -> tilePool.freeOf(block);
 
         wsClient = new WebSocketClient("wss://echo.websocket.org");
         gameFieldChecker = new GameFieldChecker();
@@ -74,8 +81,7 @@ class Game extends hxd.App {
         } else if (Key.isPressed(Key.RIGHT)) {
             if(gameFieldChecker.checkBlockCollision(figure.blocks, "right", pool.usedBlocks)){
                 figure.moveRight();
-            }
-                
+            }  
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
         }
