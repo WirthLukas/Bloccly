@@ -11,11 +11,17 @@ class GameFieldChecker implements Observable {
     public function new() {
     }
 
+    /**
+     * [Description]
+     * @param blocks 
+     * @param move 
+     * @param usedBlocks 
+     * @return moving allowed
+     */
     public function checkBlockCollision(blocks: Array<Block>, move: String, usedBlocks: Array<Block>): Bool{
         for(block in blocks){
             //Left bound or right bound
-            if((block.x == 0 && move == "left") 
-                || (block.x == Game.FIELD_WIDTH - 1 && move == "right"))
+            if (collideLeft(block, move) || collideRight(block, move))
                 return false;
 
             //Another Block to the left or right
@@ -30,9 +36,17 @@ class GameFieldChecker implements Observable {
         return true;
     }
 
+    private inline function collideLeft(block: Block, move: String): Bool {
+        return block.x == 0 && move == "left";
+    }
+
+    private inline function collideRight(block: Block, move: String): Bool {
+        return block.x == Game.FIELD_WIDTH - 1 && move == "right";
+    }
+
     //Checks if a row is full and returns an Array of Integers, which indicate which rows are full
-    public function checkRowFull(blocks: Array<Block>): Void{
-        var rows: Array<Int> = [ for(x in 0...Game.FIELD_HEIGHT) 0 ]; //Size of Field
+    public function checkRowFull(blocks: Array<Block>): Array<Bool> {
+        var rows: Array<Int> = [ for(_ in 0...Game.FIELD_HEIGHT) 0 ]; //Size of Field
 
         //Sum of blocks in a given row
         //If a row reaches the same value as Game.FIELD_WIDTH, it is full
@@ -40,12 +54,8 @@ class GameFieldChecker implements Observable {
             rows[block.y]++;
 
         //If a given row contains a one, it shows, that this row is full
-        var fullRows = rows.map(num -> num/Game.FIELD_WIDTH == 1 ? true : false);
-
-        //Notifies Observers, if at least one row is filled
-        if(fullRows.filter(row -> row).length >= 1){
-            this.notify(fullRows);
-        }
+        var fullRows: Array<Bool> = rows.map(num -> num / Game.FIELD_WIDTH == 1 ? true : false);
+        return fullRows;
     }    
 
     //Returns true, if a Block from a Figure reaches the bottom of the playing field...
