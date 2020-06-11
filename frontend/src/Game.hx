@@ -1,4 +1,3 @@
-import core.models.Block;
 import h2d.Text;
 import hxd.Res;
 import hxd.Key;
@@ -28,12 +27,6 @@ class Game extends hxd.App {
     public function new() {
         super();
         pool = new BlockPool();
-        // pool.setAddListener(block -> {
-        //     new BlockTile(block, s2d);
-        //     // i++;
-        //     // log("" + i);
-        // });
-
         pool.onAdded = block -> new BlockTile(block, s2d);
 
         wsClient = new WebSocketClient("wss://echo.websocket.org");
@@ -85,8 +78,9 @@ class Game extends hxd.App {
             figure.moveDown();
         }
 
+        // check if figure reached the bottom
+        // if yes destry the figure
         gameFieldChecker.checkRowFull(pool.usedBlocks);
-
     }
 
     private function newFigureOf(color: view.Color, x: Int, y: Int): Figure
