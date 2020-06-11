@@ -12,14 +12,13 @@ class WebSocketClient implements Observer{
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
-        ws.onopen = function() {
+        trace("testing");
+        ws.onopen = () -> {
             this.isOpen = true;
         }
         
         //TODO: Handle incoming message
-        ws.onmessageString = function(message){
-            trace("message: "+message);
-        }
+        ws.onmessageString = message -> trace("message: "+message)
 
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
@@ -31,15 +30,10 @@ class WebSocketClient implements Observer{
         });
         #end
     }
-
-    private function sendMessage(message: String){
-        if(isOpen){
-            ws.sendString(message);
-        } 
-        else {
-            trace("Client is not yet open");
-        }
-    }
+          
+    private function sendMessage(message: String)
+        if (isOpen) ws.sendString(message);
+        else trace("Client is not yet open");
 
     public function update(sender: Observable, ?data: Any){
         trace("WebSocketClient update: " + data + " from " + sender);
@@ -52,5 +46,4 @@ class WebSocketClient implements Observer{
             //sendMessage("Rows are full: " + data);
         }
     }
-    
 }
