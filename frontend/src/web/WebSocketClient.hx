@@ -32,14 +32,11 @@ class WebSocketClient implements Observer{
         #end
     }
 
-    private function sendMessage(message: String){
-        if(isOpen){
+    private function sendMessage(message: String)
+        if(isOpen)
             ws.sendString(message);
-        } 
-        else {
+        else 
             trace("Client is not yet open");
-        }
-    }
 
     public function update(sender: Observable, ?data: Any){
         trace("WebSocketClient update: " + data + " from " + sender);

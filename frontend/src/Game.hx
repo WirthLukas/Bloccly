@@ -14,12 +14,18 @@ using core.pattern.observer.ObservableExtender;
 
 class Game extends hxd.App {
 
+    public static inline var FIELD_WIDTH = 10;
+    public static inline var FIELD_HEIGHT = 21;
+
     private var figure: Figure;
     private var pool: BlockPool;
     private var tf: Text;
     private var i = 0;
     private var wsClient: WebSocketClient;
     private var gameFieldChecker: GameFieldChecker;
+
+    private var updateCount: Int = 0;
+    private var resetCount: Int = 50;
 
     public function new() {
         super();
@@ -69,11 +75,20 @@ class Game extends hxd.App {
         if (Key.isPressed(Key.DOWN)) {
             figure.moveDown();
         } else if (Key.isPressed(Key.LEFT)) {
-            figure.moveLeft();
+            if(gameFieldChecker.checkBlockStaysInBounds(figure.blocks, "left"))
+                figure.moveLeft();
         } else if (Key.isPressed(Key.RIGHT)) {
-            figure.moveRight();
+            if(gameFieldChecker.checkBlockStaysInBounds(figure.blocks, "right"))
+                figure.moveRight();
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
+        }
+
+        updateCount++;
+
+        if (updateCount == resetCount) {
+            updateCount = 0;
+            figure.moveDown();
         }
 
         if(gameFieldChecker.checkBlockReachesBottom(figure, pool.usedBlocks)){
