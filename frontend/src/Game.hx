@@ -62,7 +62,7 @@ class Game extends hxd.App {
         g.beginFill(0xFF00FF, .5);
         g.drawCircle(200, 200, 100);*/
     
-        figure = newFigureOf(Yellow, 5, 0);
+        figure = newFigureOf(Cyan, 5, 0);
         figure.addObserver(wsClient);        
     }
 
@@ -98,7 +98,7 @@ class Game extends hxd.App {
             //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
             gameFieldChecker.checkRowFull(pool.usedBlocks);
             //Create new Figure
-            figure = newFigureOf(Yellow, 5, 0);
+            figure = newFigureOf(Cyan, 5, 0);
             figure.addObserver(wsClient);
             trace("Block reached Bottom");
         }   

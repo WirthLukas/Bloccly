@@ -42,12 +42,12 @@ class BlockPool implements Observable
     public function freeRow(row: Int){
         var blocksOfRow = usedBlocks.filter(block -> block.y == row);
         for(block in blocksOfRow){
-            usedBlocks.remove(block);
-            freeBlocks.push(block);
-            onFreed(block);
+            free(block);
         }
     }
 
+    //BlockPool gets notified by GameFieldChecker once at least one row is full
+    //The BlockPool then proceeds to free the cleared Rows
     public function update(sender: Observable, ?data: Any){
         if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
             trace("Rows are full " + data);

@@ -54,7 +54,7 @@ class GameFieldChecker implements Observable {
     public function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
         for(block in figureBlocks){
             //race("CheckBlockReachesBottom Y is " + block.y);
-            if(block.y >= 10) //Bottom of playing field (Game.FIELD_HEIGHT), 10 IS ONLY FOR TESTING PURPOSES
+            if(block.y >= 15) //Bottom of playing field (Game.FIELD_HEIGHT), CURRENT VALUE IS ONLY FOR TESTING PURPOSES
                 return true;
             else 
                 for(usedBlock in usedBlocks){
