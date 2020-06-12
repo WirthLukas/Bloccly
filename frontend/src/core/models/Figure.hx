@@ -1,5 +1,6 @@
 package core.models;
 
+import logic.BlockPool;
 import core.pattern.observer.Observable;
 
 using core.pattern.observer.ObservableExtender;
@@ -60,4 +61,7 @@ class Figure implements Observable {
         this.notify("right");
     }
 
+    public function destroy(pool: BlockPool): Void 
+        for (block in blocks)
+            pool.free(block);
 }

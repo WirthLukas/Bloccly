@@ -18,7 +18,7 @@ class WebSocketClient implements Observer{
         }
         
         //TODO: Handle incoming message
-        ws.onmessageString = message -> trace("message: "+message)
+        ws.onmessageString = message -> trace("message: "+message);
 
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys

@@ -6,8 +6,7 @@ import core.models.Block;
 
 using utils.ArrayTools;
 
-class BlockPool implements Observable 
-                implements Observer {
+class BlockPool implements Observable {
     /**
      * Blocks, which are currently used
      */
@@ -22,7 +21,7 @@ class BlockPool implements Observable
 
     public function getBlock(): Block {
         // if there are no free blocks, which could be used,
-        // we geneare a new one
+        // we generate a new one
         var block: Block = freeBlocks.isEmpty()
             ? new Block(0, 0)
             : freeBlocks.pop();
@@ -42,24 +41,21 @@ class BlockPool implements Observable
     public function freeRow(row: Int){
         var blocksOfRow = usedBlocks.filter(block -> block.y == row);
         for(block in blocksOfRow){
-            usedBlocks.remove(block);
-            freeBlocks.push(block);
-            onFreed(block);
+            free(block);
         }
     }
 
-    public function update(sender: Observable, ?data: Any){
-        if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
-            trace("Rows are full " + data);
-            var rows: Array<Bool> = cast data;
-            for(i in 0...rows.length)
-                if(rows[i]){
-                    trace(i);
-                    freeRow(i);
-                }
-        }
-    }
-
+    /**
+     * [Description]
+     * @param moving all blocks, that are positioned above this row
+     * @param dx amount to move in the horizontal direction (negative values means moving to the left)
+     * @param dy amount to move in the vertical direction (negative values means moving to the top)
+     */
+    public function moveAllBlocksAboveRow(row: Int, dx: Int, dy: Int): Void
+        for (block in usedBlocks)
+            if (block.y <= row && block.y != Game.FIELD_HEIGHT)
+                block.setPosition(block.x + dx, block.y + dy);
+                
     public dynamic function onAdded(block: Block) { }
     public dynamic function onFreed(block: Block) { }
 }
