@@ -1,3 +1,4 @@
+import web.WebSocketMessage;
 import view.ColorProvidable;
 import view.LocalColorProvider;
 import view.Color;
@@ -28,7 +29,7 @@ class Game extends hxd.App {
     private var tilePool: BlockTilePool = new BlockTilePool();
     private var tf: Text;
     private var i = 0;
-    private var wsClient = new WebSocketClient("wss://echo.websocket.org");
+    private var wsClient = new WebSocketClient("wss://echo.websocket.org"); //Testing: wss://echo.websocket.org
     private var colorProvider: ColorProvidable = new LocalColorProvider();
     private var lost: Bool = false;
 
@@ -99,7 +100,7 @@ class Game extends hxd.App {
                 }  
             } else if (Key.isPressed(Key.UP)) {
                 figure.rotate();
-            }
+            } 
 
             updateCount++;
 
@@ -117,19 +118,25 @@ class Game extends hxd.App {
                 lost = true;
                 tf.text = "You lost the game.";
                 trace("You lost the game.");
+                var wsMessage = new WebSocketMessage("loss", pool.usedBlocks);
+                wsClient.sendWebSocketMessage(wsMessage);
             }
             else {
                 //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
                 var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
     
                 if (fullRows.map(row -> row).length >= 1) {
-                    clearFullRows(fullRows);
-                    wsClient.sendBlocks(pool.usedBlocks); //wsClient sends the Array of Blocks to the Server, after a line is cleared.
+                    clearFullRows(fullRows); 
                 }
+                
+                var wsMessage = new WebSocketMessage("blockupdate", pool.usedBlocks);
+                wsClient.sendWebSocketMessage(wsMessage);
     
-                //Create new Figure
+                //Create new Figure and notify wsClient
                 nextColor = colorProvider.getNextColor();
                 figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
+                var wsMessage = new WebSocketMessage("newblock", figure.blocks);
+                wsClient.sendWebSocketMessage(wsMessage);
             }
         }
     }

@@ -1,5 +1,6 @@
 package web;
 
+import haxe.io.Bytes;
 import core.models.Block;
 import haxe.net.WebSocket;
 
@@ -16,10 +17,8 @@ class WebSocketClient{
             this.isOpen = true;
         }
         
-        //TODO: Handle incoming messages and bytes
-        ws.onmessageString = message -> trace("message: "+message);
-        ws.onmessageBytes = bytes -> trace("bytes:"+bytes);
-
+        //TODO: Handle incoming messages
+        ws.onmessageString = message -> receiveWebSocketMessage(message);
 
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
@@ -32,20 +31,19 @@ class WebSocketClient{
         #end
     }
 
-    private function receiveBlocks(blocks: Array<Block>){
-        
+    private function receiveWebSocketMessage(sWsMessage: String){
+        trace("Serialized Message:"+sWsMessage);
+        var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
+        trace("Received Message: "+wsMessage);
+        trace("Received Message-Command: "+wsMessage.command);
+        trace("Received Message-Data: "+wsMessage.data);
     }
           
     private function sendMessage(message: String)
         if (isOpen) ws.sendString(message);
         else trace("Client is not yet open");
 
-    /*private function sendBytes(bytes: Bytes)
-        if (isOpen) ws.sendBytes(bytes);
-        else trace("Client is not yet open");*/
-
-    public function sendBlocks(blocks: Array<Block>){
-        //sendBlocks(blocks.toString());
-    }
-
+    public function sendWebSocketMessage(wsMessage: WebSocketMessage)
+        sendMessage(WebSocketMessage.serializeMessage(wsMessage));
+    
 }
