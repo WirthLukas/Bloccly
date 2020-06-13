@@ -19,7 +19,7 @@ class WebSocketClient{
         
         //TODO: Handle incoming messages
         ws.onmessageString = message -> receiveWebSocketMessage(message);
-
+        
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
         sys.thread.Thread.create(() -> {
@@ -32,18 +32,16 @@ class WebSocketClient{
     }
 
     private function receiveWebSocketMessage(sWsMessage: String){
-        trace("Serialized Message:"+sWsMessage);
         var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
-        trace("Received Message: "+wsMessage);
-        trace("Received Message-Command: "+wsMessage.command);
-        trace("Received Message-Data: "+wsMessage.data);
+
     }
           
     private function sendMessage(message: String)
         if (isOpen) ws.sendString(message);
         else trace("Client is not yet open");
 
-    public function sendWebSocketMessage(wsMessage: WebSocketMessage)
+    public function sendWebSocketMessage(wsMessage: WebSocketMessage){
         sendMessage(WebSocketMessage.serializeMessage(wsMessage));
+    }
     
 }
