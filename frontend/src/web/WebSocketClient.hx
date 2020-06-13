@@ -9,6 +9,8 @@ class WebSocketClient{
     private var ws: WebSocket;
     private var isOpen: Bool = false;
 
+    public var game(default, default): Game;
+
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
@@ -17,7 +19,6 @@ class WebSocketClient{
             this.isOpen = true;
         }
         
-        //TODO: Handle incoming messages
         ws.onmessageString = message -> receiveWebSocketMessage(message);
 
         //New Thread -> WebSocket is checking for Messages from specified Server
@@ -34,8 +35,18 @@ class WebSocketClient{
     private function receiveWebSocketMessage(sWsMessage: String){
         var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
         
-        
+        if(wsMessage.command == CommandType.Id){
+            game.playerId = wsMessage.data;
+        }
+        else if(wsMessage.command == CommandType.Loss){
+            
+        }
+        else if(wsMessage.command == CommandType.BlockUpdate){
 
+        }
+        else if(wsMessage.command == CommandType.NewBlock){
+
+        }
     }
           
     private function sendMessage(message: String)
@@ -44,6 +55,7 @@ class WebSocketClient{
 
     public function sendWebSocketMessage(wsMessage: WebSocketMessage){
         sendMessage(WebSocketMessage.serializeMessage(wsMessage));
+        trace("Ser: "+WebSocketMessage.serializeMessage(wsMessage));
     }
     
 }

@@ -4,11 +4,13 @@ import haxe.Unserializer;
 import haxe.Serializer;
 
 class WebSocketMessage {
-    public var command(default, default): String;
+    public var command(default, default): CommandType;
+    public var playerId(default, default): Int;
     public var data(default, default): Any;
 
-    public function new (command: String, data: Any){
+    public function new (command: CommandType, playerId: Int, data: Any){
         this.command = command;
+        this.playerId = playerId;
         this.data = data;
     }
 

@@ -11,6 +11,8 @@ import logic.BlockPool;
 import logic.FigureBuilder;
 import view.BlockTilePool;
 import web.WebSocketClient;
+import web.CommandType;
+import web.Player;
 import logic.GameFieldChecker;
 
 // For Extension Method
@@ -29,13 +31,17 @@ class Game extends hxd.App {
     private var tilePool: BlockTilePool = new BlockTilePool();
     private var tf: Text;
     private var i = 0;
-    private var wsClient = new WebSocketClient("ws://localhost:8100/ws"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
     private var colorProvider: ColorProvidable = new LocalColorProvider();
     private var lost: Bool = false;
 
     private var updateCount: Int = 0;
     private var resetCount: Int = 50;
     private var nextColor: Color;
+
+    //Multiplayer variables
+    private var wsClient = new WebSocketClient("ws://localhost:8100/ws"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
+    public var playerId(default, default): Int;
+    private var players: Array<Player>;
 
     public function new() {
         super();
@@ -70,6 +76,7 @@ class Game extends hxd.App {
         g.drawCircle(200, 200, 100);*/
     
         figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
+        wsClient.game = this;
     }
 
     private function log(text: String) {
@@ -118,7 +125,7 @@ class Game extends hxd.App {
                 lost = true;
                 tf.text = "You lost the game.";
                 trace("You lost the game.");
-                var wsMessage = new WebSocketMessage("loss", pool.usedBlocks);
+                var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, pool.usedBlocks);
                 wsClient.sendWebSocketMessage(wsMessage);
             }
             else {
@@ -129,13 +136,13 @@ class Game extends hxd.App {
                     clearFullRows(fullRows); 
                 }
                 
-                var wsMessage = new WebSocketMessage("blockupdate", pool.usedBlocks);
+                var wsMessage = new WebSocketMessage(CommandType.BlockUpdate, playerId, pool.usedBlocks);
                 wsClient.sendWebSocketMessage(wsMessage);
     
                 //Create new Figure and notify wsClient
                 nextColor = colorProvider.getNextColor();
                 figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
-                var wsMessage = new WebSocketMessage("newblock", figure.blocks);
+                var wsMessage = new WebSocketMessage(CommandType.NewBlock, playerId, figure.blocks);
                 wsClient.sendWebSocketMessage(wsMessage);
             }
         }
@@ -161,6 +168,7 @@ class Game extends hxd.App {
                 pool.moveAllBlocksAboveRow(i, 0, 1);
             }
                 
+    //Needs more functionality
     private function startNewGame(){
         var fullRows: Array<Bool> = [ for(i in 0...FIELD_HEIGHT) true];
         clearFullRows(fullRows);
@@ -170,6 +178,5 @@ class Game extends hxd.App {
         Res.initEmbed();
         new Game();
     }
-
     
 }
