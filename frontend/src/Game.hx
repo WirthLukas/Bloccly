@@ -14,6 +14,7 @@ import logic.GameFieldChecker;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
+using utils.ArrayTools;
 
 class Game extends hxd.App {
 
@@ -27,7 +28,8 @@ class Game extends hxd.App {
     private var tilePool: BlockTilePool = new BlockTilePool();
     private var tf: Text;
     private var i = 0;
-    private var wsClient: WebSocketClient;
+    private var wsClient = new WebSocketClient("wss://echo.websocket.org");
+    private var gameFieldChecker  = new GameFieldChecker();
     private var colorProvider: ColorProvidable = new LocalColorProvider();
     private var lost: Bool = false;
 
@@ -37,6 +39,9 @@ class Game extends hxd.App {
 
     public function new() {
         super();
+
+        // every time a new block is added to the game field
+        // this block will added to a block tile (which displays the block)
         pool.onAdded = block -> tilePool
             .getBlockTile(block, s2d)
             .withColor(nextColor)
@@ -45,8 +50,6 @@ class Game extends hxd.App {
 
         pool.onFreed = block -> tilePool.freeOf(block);
         nextColor = colorProvider.getNextColor();
-
-        wsClient = new WebSocketClient("wss://echo.websocket.org"); //WS-Server-Adress for testing purposes
     }
 
     override function init() {
@@ -88,6 +91,10 @@ class Game extends hxd.App {
                 }  
             } else if (Key.isPressed(Key.UP)) {
                 figure.rotate();
+            } else if (Key.isPressed(Key.SPACE)) {
+                while(!GameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)) {
+                    figure.moveDown();
+                }
             }
     
             updateCount++;
@@ -120,7 +127,6 @@ class Game extends hxd.App {
                     figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
                 }
             }
-
         }
     }
 
