@@ -1,11 +1,8 @@
 package core.models;
 
 import logic.BlockPool;
-import core.pattern.observer.Observable;
 
-using core.pattern.observer.ObservableExtender;
-
-class Figure implements Observable {
+class Figure {
     public var blocks(default, null): Array<Block>;
     private var originPos: Int;
     private var shouldRotate: Bool;
@@ -39,27 +36,22 @@ class Figure implements Observable {
             // a simpler version of the above formula
             block.setPosition(origin.x + origin.y - block.y, origin.y - origin.x + block.x);
         }
-
-        this.notify("rotate");
     }
 
-    public function moveDown(){
+    public function moveDown()
         for (block in blocks)
             block.setPosition(block.x, block.y + 1);
-        this.notify("down");
-    }
+    
 
-    public function moveLeft(){
+    public function moveLeft()
         for (block in blocks)
             block.setPosition(block.x - 1, block.y);
-        this.notify("left");
-    }
+    
 
-    public function moveRight(){
+    public function moveRight()
         for (block in blocks)
             block.setPosition(block.x + 1, block.y);
-        this.notify("right");
-    }
+    
 
     public function destroy(pool: BlockPool): Void 
         for (block in blocks)

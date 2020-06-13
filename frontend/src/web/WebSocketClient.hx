@@ -1,5 +1,7 @@
 package web;
 
+import core.models.Block;
+import haxe.io.Bytes;
 import core.pattern.observer.Observer;
 import core.pattern.observer.Observable;
 import haxe.net.WebSocket;
@@ -30,10 +32,22 @@ class WebSocketClient implements Observer{
         });
         #end
     }
+
+    private function receiveBlocks(blocks: Array<Block>){
+        
+    }
           
     private function sendMessage(message: String)
         if (isOpen) ws.sendString(message);
         else trace("Client is not yet open");
+
+    /*private function sendBytes(bytes: Bytes)
+        if (isOpen) ws.sendBytes(bytes);
+        else trace("Client is not yet open");*/
+
+    public function sendBlocks(blocks: Array<Block>){
+        //sendBlocks(blocks.toString());
+    }
 
     public function update(sender: Observable, ?data: Any){
         trace("WebSocketClient update: " + data + " from " + sender);
@@ -46,4 +60,5 @@ class WebSocketClient implements Observer{
             //sendMessage("Rows are full: " + data);
         }
     }
+
 }
