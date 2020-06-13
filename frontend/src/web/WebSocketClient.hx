@@ -1,5 +1,6 @@
 package web;
 
+import haxe.io.Bytes;
 import core.models.Block;
 import haxe.net.WebSocket;
 
@@ -7,6 +8,8 @@ class WebSocketClient{
 
     private var ws: WebSocket;
     private var isOpen: Bool = false;
+
+    public var game(default, default): Game;
 
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
@@ -16,10 +19,7 @@ class WebSocketClient{
             this.isOpen = true;
         }
         
-        //TODO: Handle incoming messages and bytes
-        ws.onmessageString = message -> trace("message: "+message);
-        ws.onmessageBytes = bytes -> trace("bytes:"+bytes);
-
+        ws.onmessageString = message -> receiveWebSocketMessage(message);
 
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
@@ -32,20 +32,30 @@ class WebSocketClient{
         #end
     }
 
-    private function receiveBlocks(blocks: Array<Block>){
+    private function receiveWebSocketMessage(sWsMessage: String){
+        var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
         
+        if(wsMessage.command == CommandType.Id){
+            game.playerId = wsMessage.data;
+        }
+        else if(wsMessage.command == CommandType.Loss){
+            
+        }
+        else if(wsMessage.command == CommandType.BlockUpdate){
+
+        }
+        else if(wsMessage.command == CommandType.NewBlock){
+
+        }
     }
           
     private function sendMessage(message: String)
         if (isOpen) ws.sendString(message);
         else trace("Client is not yet open");
 
-    /*private function sendBytes(bytes: Bytes)
-        if (isOpen) ws.sendBytes(bytes);
-        else trace("Client is not yet open");*/
-
-    public function sendBlocks(blocks: Array<Block>){
-        //sendBlocks(blocks.toString());
+    public function sendWebSocketMessage(wsMessage: WebSocketMessage){
+        sendMessage(WebSocketMessage.serializeMessage(wsMessage));
+        trace("Ser: "+WebSocketMessage.serializeMessage(wsMessage));
     }
-
+    
 }
