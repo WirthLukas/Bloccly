@@ -20,13 +20,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb487f8e-df7a-4971-beae-5090f41dde5e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/blocks/BlockTypes.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websocket/client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websocket/pool.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websocket/websocket.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/blockService.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/events.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/events.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/websocket.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/websocket.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/Player.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/player.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/blocks/BlockTypes.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/blocks/blocktypes.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,15 +61,16 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="go.sdk" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Patrick\Schule\Projects\bloccly\backend" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Patrick\Schule\Projects\bloccly\backend\models\blocks" />
       <recent name="D:\Patrick\Schule\Projects\bloccly\backend\models" />
+      <recent name="D:\Patrick\Schule\Projects\bloccly\backend" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Patrick\Schule\Projects\bloccly\backend" />
     </key>
   </component>
@@ -104,33 +105,44 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="890" y="276" key="#GOPATH" timestamp="1589277776093">
-      <screen x="0" y="0" width="2194" height="1234" />
+    <state x="623" y="182" key="#GOPATH" timestamp="1592054480437">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state x="623" y="182" key="#GOPATH/0.0.1536.864@0.0.1536.864" timestamp="1592054480437" />
     <state x="890" y="276" key="#GOPATH/0.0.2194.1234@0.0.2194.1234" timestamp="1589277776093" />
-    <state x="878" y="372" key="FileChooserDialogImpl" timestamp="1589883532323">
-      <screen x="0" y="0" width="2194" height="1234" />
+    <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592058991680">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.864@0.0.1536.864" timestamp="1592058991680" />
+    <state x="615" y="260" key="FileChooserDialogImpl" timestamp="1592054552143">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="615" y="260" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1592054552143" />
     <state x="878" y="372" key="FileChooserDialogImpl/0.0.2194.1234@0.0.2194.1234" timestamp="1589883532323" />
-    <state width="2151" height="339" key="GridCell.Tab.0.bottom" timestamp="1590666200699">
-      <screen x="0" y="0" width="2194" height="1234" />
+    <state width="1493" height="223" key="GridCell.Tab.0.bottom" timestamp="1592077014244">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state width="1493" height="223" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1592077014244" />
     <state width="2151" height="339" key="GridCell.Tab.0.bottom/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
-    <state width="2151" height="339" key="GridCell.Tab.0.center" timestamp="1590666200699">
-      <screen x="0" y="0" width="2194" height="1234" />
+    <state width="1493" height="223" key="GridCell.Tab.0.center" timestamp="1592077014244">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state width="1493" height="223" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1592077014244" />
     <state width="2151" height="339" key="GridCell.Tab.0.center/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
-    <state width="2151" height="339" key="GridCell.Tab.0.left" timestamp="1590666200699">
-      <screen x="0" y="0" width="2194" height="1234" />
+    <state width="1493" height="223" key="GridCell.Tab.0.left" timestamp="1592077014244">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state width="1493" height="223" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1592077014244" />
     <state width="2151" height="339" key="GridCell.Tab.0.left/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
-    <state width="2151" height="339" key="GridCell.Tab.0.right" timestamp="1590666200699">
-      <screen x="0" y="0" width="2194" height="1234" />
+    <state width="1493" height="223" key="GridCell.Tab.0.right" timestamp="1592077014244">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state width="1493" height="223" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1592077014244" />
     <state width="2151" height="339" key="GridCell.Tab.0.right/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
-    <state x="606" y="262" key="SettingsEditor" timestamp="1590487120072">
-      <screen x="0" y="0" width="2194" height="1234" />
+    <state x="424" y="155" key="SettingsEditor" timestamp="1592054558630">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state x="424" y="155" key="SettingsEditor/0.0.1536.864@0.0.1536.864" timestamp="1592054558630" />
     <state x="606" y="262" key="SettingsEditor/0.0.2194.1234@0.0.2194.1234" timestamp="1590487120072" />
     <state x="904" y="527" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589278261352">
       <screen x="0" y="0" width="2194" height="1234" />

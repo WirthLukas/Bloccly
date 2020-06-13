@@ -1,43 +1,73 @@
 package main
 
 import (
-	Service "./service"
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
+
+	"./websocket"
 )
 
+type Message struct {
+	Command int `json:command`
+	Data int `json:data`
+}
+
 func main() {
-	//Websocket test using a small web page
-	http.Handle("/", http.FileServer(http.Dir("./assets")))
+	port := 8100
 
-	listen(8080)
+	fmt.Println(">> Bloccly Go Server v0.1 <<")
+	//fmt.Println(Block.Blue.Block())
+	setupRoutes()
+	fmt.Printf("[INFO]: Server running on crack and alcohol %+v\n", port)
+	http.ListenAndServe(":" + strconv.Itoa(port), nil)
 }
 
-func listen(port int) {
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		ws, err := Service.NewWebSocket(w, r)
-		if err != nil {
-			log.Panicf("Error creating websocket connection: %v", err)
-			return
+func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[INFO]: WebSocket Endpoint Hit")
+	conn, err := websocket.Upgrade(w, r)
+	if err != nil {
+		fmt.Fprintf(w, "%+v\n", err)
+	}
+
+	client := &websocket.Client{
+		Conn: conn,
+		Pool: pool,
+	}
+
+	id := 1
+
+	if len(pool.Clients) == 0 {
+		client.ID = 1
+	} else {
+
+		exist := true
+		for exist {
+			exist = false
+			for c := range pool.Clients {
+				if c.ID == id {
+					id++
+					exist = true
+					break
+				}
+			}
 		}
+		client.ID = id
+	}
 
-		//.On == receive
-		ws.On("message", func(event *Service.Event) {
-			log.Printf("Message received: %v", event.Data.(string)) //Cast to String can result to an error
-
-			//Out = send
-			ws.Out <- (&Service.Event {
-				Name: "response",
-				Data: event.Data.(string),
-			}).ToRaw()
-		})
+	client.Conn.WriteJSON(Message{
+		Command: 0,
+		Data:    id,
 	})
-
-	log.Printf("WebServer listening on port %v\n", port)
-	_ = http.ListenAndServe(":"+strconv.Itoa(port), nil)
+	pool.Register <- client
+	client.Read()
 }
 
-func onMessage() {
-		
+func setupRoutes() {
+	pool := websocket.NewPool()
+	go pool.Start()
+
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(pool, w, r)
+	})
 }
