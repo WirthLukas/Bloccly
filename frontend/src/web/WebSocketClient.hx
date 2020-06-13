@@ -16,8 +16,10 @@ class WebSocketClient{
             this.isOpen = true;
         }
         
-        //TODO: Handle incoming message
+        //TODO: Handle incoming messages and bytes
         ws.onmessageString = message -> trace("message: "+message);
+        ws.onmessageBytes = bytes -> trace("bytes:"+bytes);
+
 
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
@@ -45,4 +47,5 @@ class WebSocketClient{
     public function sendBlocks(blocks: Array<Block>){
         //sendBlocks(blocks.toString());
     }
+
 }
