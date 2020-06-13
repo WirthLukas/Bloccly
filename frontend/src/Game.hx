@@ -14,6 +14,7 @@ import logic.GameFieldChecker;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
+using utils.ArrayTools;
 
 class Game extends hxd.App {
 
@@ -27,7 +28,7 @@ class Game extends hxd.App {
     private var tilePool: BlockTilePool = new BlockTilePool();
     private var tf: Text;
     private var i = 0;
-    private var wsClient: WebSocketClient;
+    private var wsClient = new WebSocketClient("wss://echo.websocket.org");
     private var colorProvider: ColorProvidable = new LocalColorProvider();
     private var lost: Bool = false;
 
@@ -37,6 +38,9 @@ class Game extends hxd.App {
 
     public function new() {
         super();
+
+        // every time a new block is added to the game field
+        // this block will added to a block tile (which displays the block)
         pool.onAdded = block -> tilePool
             .getBlockTile(block, s2d)
             .withColor(nextColor)
@@ -45,8 +49,6 @@ class Game extends hxd.App {
 
         pool.onFreed = block -> tilePool.freeOf(block);
         nextColor = colorProvider.getNextColor();
-
-        wsClient = new WebSocketClient("wss://echo.websocket.org"); //WS-Server-Adress for testing purposes
     }
 
     override function init() {
@@ -76,7 +78,16 @@ class Game extends hxd.App {
     override function update(dt:Float) {
         super.update(dt);
 
-        if(!lost){
+        if (lost) return;
+
+        var blockReachedBottom = if (Key.isPressed(Key.SPACE)) {
+            while(!GameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)) {
+                figure.moveDown();
+            }
+
+            updateCount = 0;
+            true;
+        } else {
             if (Key.isPressed(Key.DOWN)) {
                 figure.moveDown();
             } else if (Key.isPressed(Key.LEFT)) {
@@ -89,38 +100,37 @@ class Game extends hxd.App {
             } else if (Key.isPressed(Key.UP)) {
                 figure.rotate();
             }
-    
+
             updateCount++;
-    
+
             if (updateCount == resetCount) {
                 updateCount = 0;
                 figure.moveDown();
             }
-          
-            var blockReachedBottom = GameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks);
+            
+            GameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks);
+        } 
 
-            if(blockReachedBottom){
-                trace("Block reached Bottom");
-                if(figure.blocks.filter(block -> block.y < 0).length > 0){
-                    lost = true;
-                    tf.text = "You lost the game.";
-                    trace("You lost the game.");
-                }
-                else {
-                    //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
-                    var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
-        
-                    if (fullRows.map(row -> row).length >= 1) {
-                        clearFullRows(fullRows);
-                        wsClient.sendBlocks(pool.usedBlocks); //wsClient sends the Array of Blocks to the Server, after a line is cleared.
-                    }
-        
-                    //Create new Figure
-                    nextColor = colorProvider.getNextColor();
-                    figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
-                }
+        if(blockReachedBottom){
+            trace("Block reached Bottom");
+            if(figure.blocks.filter(block -> block.y < 0).length > 0){
+                lost = true;
+                tf.text = "You lost the game.";
+                trace("You lost the game.");
             }
-
+            else {
+                //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
+                var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
+    
+                if (fullRows.map(row -> row).length >= 1) {
+                    clearFullRows(fullRows);
+                    wsClient.sendBlocks(pool.usedBlocks); //wsClient sends the Array of Blocks to the Server, after a line is cleared.
+                }
+    
+                //Create new Figure
+                nextColor = colorProvider.getNextColor();
+                figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
+            }
         }
     }
 

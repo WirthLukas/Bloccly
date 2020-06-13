@@ -3,7 +3,7 @@ package web;
 import core.models.Block;
 import haxe.net.WebSocket;
 
-class WebSocketClient {
+class WebSocketClient{
 
     private var ws: WebSocket;
     private var isOpen: Bool = false;
