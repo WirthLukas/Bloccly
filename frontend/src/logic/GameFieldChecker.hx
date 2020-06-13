@@ -2,13 +2,20 @@ package logic;
 
 import core.models.Figure;
 import core.models.Block;
-import core.pattern.observer.Observable;
 
-using core.pattern.observer.ObservableExtender;
+class GameFieldChecker {
 
-class GameFieldChecker implements Observable {
+    public static function checkGameLost(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
+        for(block in figureBlocks){
+            for(usedBlock in usedBlocks)
+                //If the Block is at the same position as a used Block on the x and y Axis - the player loses
+                //Blocks which are from the Figure are filtered out
+                if(block.y == usedBlock.y && block.x == usedBlock.x)
+                    if(figureBlocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0)
+                        return true;   
+        }
 
-    public function new() {
+        return false;
     }
 
     /**
@@ -18,7 +25,7 @@ class GameFieldChecker implements Observable {
      * @param usedBlocks 
      * @return moving allowed
      */
-    public function checkBlockCollision(blocks: Array<Block>, move: String, usedBlocks: Array<Block>): Bool{
+    public static function checkBlockCollision(blocks: Array<Block>, move: String, usedBlocks: Array<Block>): Bool{
         for(block in blocks){
             //Left bound or right bound
             if (collideLeft(block, move) || collideRight(block, move))
@@ -36,16 +43,16 @@ class GameFieldChecker implements Observable {
         return true;
     }
 
-    private inline function collideLeft(block: Block, move: String): Bool {
+    private static inline function collideLeft(block: Block, move: String): Bool {
         return block.x == 0 && move == "left";
     }
 
-    private inline function collideRight(block: Block, move: String): Bool {
+    private static inline function collideRight(block: Block, move: String): Bool {
         return block.x == Game.FIELD_WIDTH - 1 && move == "right";
     }
 
     //Checks if a row is full and returns an Array of Integers, which indicate which rows are full
-    public function checkRowFull(blocks: Array<Block>): Array<Bool> {
+    public static function checkRowFull(blocks: Array<Block>): Array<Bool> {
         var rows: Array<Int> = [ for(_ in 0...Game.FIELD_HEIGHT) 0 ]; //Size of Field
 
         //Sum of blocks in a given row
@@ -60,9 +67,8 @@ class GameFieldChecker implements Observable {
 
     //Returns true, if a Block from a Figure reaches the bottom of the playing field...
     //... or the edge of another block
-    public function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
+    public static function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
         for(block in figureBlocks){
-            //race("CheckBlockReachesBottom Y is " + block.y);
             if(block.y >= 15) //Bottom of playing field (Game.FIELD_HEIGHT), CURRENT VALUE IS ONLY FOR TESTING PURPOSES
                 return true;
             else 

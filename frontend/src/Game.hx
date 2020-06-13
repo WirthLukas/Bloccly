@@ -8,7 +8,6 @@ import hxd.Key;
 import core.models.Figure;
 import logic.BlockPool;
 import logic.FigureBuilder;
-import view.BlockTile;
 import view.BlockTilePool;
 import web.WebSocketClient;
 import logic.GameFieldChecker;
@@ -27,8 +26,8 @@ class Game extends hxd.App {
     private var tf: Text;
     private var i = 0;
     private var wsClient: WebSocketClient;
-    private var gameFieldChecker: GameFieldChecker;
     private var colorProvider: ColorProvidable = new LocalColorProvider();
+    private var lost: Bool = false;
 
     private var updateCount: Int = 0;
     private var resetCount: Int = 50;
@@ -45,8 +44,7 @@ class Game extends hxd.App {
         pool.onFreed = block -> tilePool.freeOf(block);
         nextColor = colorProvider.getNextColor();
 
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
-        gameFieldChecker = new GameFieldChecker();
+        wsClient = new WebSocketClient("wss://echo.websocket.org"); //WS-Server for testing purposes
     }
 
     override function init() {
@@ -77,40 +75,52 @@ class Game extends hxd.App {
     override function update(dt:Float) {
         super.update(dt);
 
-        if (Key.isPressed(Key.DOWN)) {
-            figure.moveDown();
-        } else if (Key.isPressed(Key.LEFT)) {
-            if(gameFieldChecker.checkBlockCollision(figure.blocks, "left", pool.usedBlocks))
-                figure.moveLeft();
-        } else if (Key.isPressed(Key.RIGHT)) {
-            if(gameFieldChecker.checkBlockCollision(figure.blocks, "right", pool.usedBlocks)){
-                figure.moveRight();
-            }  
-        } else if (Key.isPressed(Key.UP)) {
-            figure.rotate();
-        }
-
-        updateCount++;
-
-        if (updateCount == resetCount) {
-            updateCount = 0;
-            figure.moveDown();
-        }
-      
-        if(gameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)){
-            //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
-            var fullRows: Array<Bool> = gameFieldChecker.checkRowFull(pool.usedBlocks);
-
-            if (fullRows.map(row -> row).length >= 1) {
-                clearFullRows(fullRows);
+        if(!lost){
+            if (Key.isPressed(Key.DOWN)) {
+                figure.moveDown();
+            } else if (Key.isPressed(Key.LEFT)) {
+                if(GameFieldChecker.checkBlockCollision(figure.blocks, "left", pool.usedBlocks))
+                    figure.moveLeft();
+            } else if (Key.isPressed(Key.RIGHT)) {
+                if(GameFieldChecker.checkBlockCollision(figure.blocks, "right", pool.usedBlocks)){
+                    figure.moveRight();
+                }  
+            } else if (Key.isPressed(Key.UP)) {
+                figure.rotate();
             }
-            
-            //Create new Figure
-            nextColor = colorProvider.getNextColor();
-            figure = newFigureOf(nextColor, 5, 0);
-            figure.addObserver(wsClient);
-            trace("Block reached Bottom");
-        }   
+    
+            updateCount++;
+    
+            if (updateCount == resetCount) {
+                updateCount = 0;
+                figure.moveDown();
+            }
+          
+            if(GameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)){
+                //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
+                var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
+    
+                if (fullRows.map(row -> row).length >= 1) {
+                    clearFullRows(fullRows);
+                    wsClient.sendBlocks(pool.usedBlocks); //wsClient sends the Array of Blocks to the Server, after a line is cleared.
+                }
+    
+                //Create new Figure
+                nextColor = colorProvider.getNextColor();
+                figure = newFigureOf(nextColor, 5, 0);
+    
+                //figure.addObserver(wsClient);
+                trace("Block reached Bottom");
+            }   
+
+            if(GameFieldChecker.checkGameLost(figure.blocks, pool.usedBlocks)){
+                lost = true;
+                var fullRows: Array<Bool> = [ for(i in 0...Game.FIELD_HEIGHT) true];
+                clearFullRows(fullRows);
+                tf.text = "You lost the game.";
+                trace("You lost the game.");
+            }
+        }
     }
 
     private function newFigureOf(color: view.Color, x: Int, y: Int): Figure
