@@ -19,7 +19,7 @@ class WebSocketClient{
         
         //TODO: Handle incoming messages
         ws.onmessageString = message -> receiveWebSocketMessage(message);
-        
+
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
         sys.thread.Thread.create(() -> {
@@ -33,6 +33,8 @@ class WebSocketClient{
 
     private function receiveWebSocketMessage(sWsMessage: String){
         var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
+        
+        
 
     }
           

@@ -170,4 +170,6 @@ class Game extends hxd.App {
         Res.initEmbed();
         new Game();
     }
+
+    
 }
