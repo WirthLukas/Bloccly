@@ -5,19 +5,6 @@ import core.models.Block;
 
 class GameFieldChecker {
 
-    public static function checkGameLost(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
-        for(block in figureBlocks){
-            for(usedBlock in usedBlocks)
-                //If the Block is at the same position as a used Block on the x and y Axis - the player loses
-                //Blocks which are from the Figure are filtered out
-                if(block.y == usedBlock.y && block.x == usedBlock.x)
-                    if(figureBlocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0)
-                        return true;   
-        }
-
-        return false;
-    }
-
     /**
      * [Description]
      * @param blocks 
