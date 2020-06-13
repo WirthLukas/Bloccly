@@ -15,6 +15,7 @@ import logic.GameFieldChecker;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
+using utils.ArrayTools;
 
 class Game extends hxd.App {
 
@@ -26,8 +27,8 @@ class Game extends hxd.App {
     private var tilePool: BlockTilePool = new BlockTilePool();
     private var tf: Text;
     private var i = 0;
-    private var wsClient: WebSocketClient;
-    private var gameFieldChecker: GameFieldChecker;
+    private var wsClient = new WebSocketClient("wss://echo.websocket.org");
+    private var gameFieldChecker  = new GameFieldChecker();
     private var colorProvider: ColorProvidable = new LocalColorProvider();
 
     private var updateCount: Int = 0;
@@ -36,6 +37,9 @@ class Game extends hxd.App {
 
     public function new() {
         super();
+
+        // every time a new block is added to the game field
+        // this block will added to a block tile (which displays the block)
         pool.onAdded = block -> tilePool
             .getBlockTile(block, s2d)
             .withColor(nextColor)
@@ -44,9 +48,6 @@ class Game extends hxd.App {
 
         pool.onFreed = block -> tilePool.freeOf(block);
         nextColor = colorProvider.getNextColor();
-
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
-        gameFieldChecker = new GameFieldChecker();
     }
 
     override function init() {
@@ -88,6 +89,10 @@ class Game extends hxd.App {
             }  
         } else if (Key.isPressed(Key.UP)) {
             figure.rotate();
+        }  else if (Key.isPressed(Key.SPACE)) {
+            while(!gameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)) {
+                figure.moveDown();
+            }
         }
 
         updateCount++;
