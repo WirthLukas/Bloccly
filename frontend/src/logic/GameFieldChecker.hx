@@ -1,5 +1,6 @@
 package logic;
 
+import core.Constants;
 import core.models.Figure;
 import core.models.Block;
 
@@ -35,12 +36,12 @@ class GameFieldChecker {
     }
 
     private static inline function collideRight(block: Block, move: String): Bool {
-        return block.x == Game.FIELD_WIDTH - 1 && move == "right";
+        return block.x == Constants.FIELD_WIDTH - 1 && move == "right";
     }
 
     //Checks if a row is full and returns an Array of Integers, which indicate which rows are full
     public static function checkRowFull(blocks: Array<Block>): Array<Bool> {
-        var rows: Array<Int> = [ for(_ in 0...Game.FIELD_HEIGHT) 0 ]; //Size of Field
+        var rows: Array<Int> = [ for(_ in 0...Constants.FIELD_HEIGHT) 0 ]; //Size of Field
 
         //Sum of blocks in a given row
         //If a row reaches the same value as Game.FIELD_WIDTH, it is full
@@ -48,7 +49,7 @@ class GameFieldChecker {
             rows[block.y]++;
 
         //If a given row contains a one, it shows, that this row is full
-        var fullRows: Array<Bool> = rows.map(num -> num / Game.FIELD_WIDTH == 1 ? true : false);
+        var fullRows: Array<Bool> = rows.map(num -> num / Constants.FIELD_WIDTH == 1 ? true : false);
         return fullRows;
     }    
 

@@ -1,5 +1,6 @@
 package logic;
 
+import core.Constants;
 import haxe.ds.ArraySort;
 import core.pattern.observer.Observer;
 import core.pattern.observer.Observable;
@@ -54,7 +55,7 @@ class BlockPool implements Observable {
      */
     public function moveAllBlocksAboveRow(row: Int, dx: Int, dy: Int): Void
         for (block in usedBlocks)
-            if (block.y <= row && block.y != Game.FIELD_HEIGHT)
+            if (block.y <= row && block.y != Constants.FIELD_HEIGHT)
                 block.setPosition(block.x + dx, block.y + dy);
 
     public function getHighestBlockAtCol(col: Int) {
