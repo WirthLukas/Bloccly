@@ -5,6 +5,28 @@
     "version": "0.2.0",
     "configurations": [ 
         {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "Launch Firefox",
+            "file": "${workspaceFolder}/public/index.html",
+            "preLaunchTask": {
+				"type" : "haxe",
+				"args" : "active configuration"
+			}
+        },
+        {
+            "name": "Launch Edge",
+            "request": "launch",
+            "type": "pwa-msedge",
+            "url": "file://${workspaceFolder}/public/index.html",
+            "webRoot": "${workspaceFolder}",
+            "preLaunchTask": {
+				"type" : "haxe",
+				"args" : "active configuration"
+			}
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome",
