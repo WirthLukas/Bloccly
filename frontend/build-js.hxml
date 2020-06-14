@@ -4,3 +4,4 @@
 -cp src
 -main Game
 -debug
+-D windowSize=900x600
