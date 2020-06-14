@@ -9,7 +9,7 @@ class WebSocketClient{
     private var ws: WebSocket;
     private var isOpen: Bool = false;
 
-    public var game(default, default): Game;
+    public var playerId(default, default): Int;
 
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
@@ -36,7 +36,7 @@ class WebSocketClient{
         var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
         
         if(wsMessage.command == CommandType.Id){
-            game.playerId = wsMessage.data;
+            
         }
         else if(wsMessage.command == CommandType.Loss){
             
@@ -55,7 +55,6 @@ class WebSocketClient{
 
     public function sendWebSocketMessage(wsMessage: WebSocketMessage){
         sendMessage(WebSocketMessage.serializeMessage(wsMessage));
-        trace("Ser: "+WebSocketMessage.serializeMessage(wsMessage));
     }
     
 }

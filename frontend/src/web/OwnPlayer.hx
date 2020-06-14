@@ -1,102 +1,28 @@
-import web.WebSocketMessage;
-import view.ColorProvidable;
+package web;
+
 import view.LocalColorProvider;
 import view.Color;
-import h2d.Text;
-import hxd.Res;
-import hxd.Key;
-
-import core.models.Figure;
-import logic.BlockPool;
 import logic.FigureBuilder;
-import view.BlockTilePool;
-import web.WebSocketClient;
-import web.CommandType;
-import web.Player;
-import web.OwnPlayer;
+import hxd.Key;
 import logic.GameFieldChecker;
+import view.ColorProvidable;
+import core.models.Figure;
+import h2d.Text;
+import view.BlockTilePool;
+import logic.BlockPool;
 
-// For Extension Method
-using core.pattern.observer.ObservableExtender;
-using utils.ArrayTools;
-
-class Game extends hxd.App {
-
-    public static inline var FIELD_WIDTH = 10;
-    public static inline var FIELD_HEIGHT = 21;
-    public static inline var BLOCK_START_X = 5;
-    public static inline var BLOCK_START_Y = -2;
-
-    private var figure: Figure;
-    private var pool: BlockPool = new BlockPool();
-    private var tilePool: BlockTilePool = new BlockTilePool();
-    private var tf: Text;
-    private var i = 0;
-    private var colorProvider: ColorProvidable = new LocalColorProvider();
+class OwnPlayer extends Player{
 
     private var updateCount: Int = 0;
     private var resetCount: Int = 50;
     private var nextColor: Color;
-
-    //Multiplayer variables
-    private var lost: Bool = false;
-    private var wsClient = new WebSocketClient("wss://echo.websocket.org"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
-    private var playerId = 1;
-    private var players: Array<Player> = [];
-    private var ownPlayer: OwnPlayer;
-
-    public function new() {
-        super();
-
-        // every time a new block is added to the game field
-        // this block will added to a block tile (which displays the block)
-        pool.onAdded = block -> tilePool
-            .getBlockTile(block, s2d)
-            .withColor(nextColor)
-            .setBlock(block)
-            .show();
-
-        pool.onFreed = block -> tilePool.freeOf(block);
-        nextColor = colorProvider.getNextColor();
-    }
-
-    override function init() {
-        tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
-        
-        /*var tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
-        tf.text = "Hello World !";
-
-        b = new Bitmap(Tile.fromColor(0xFF0000, 60, 60), s2d);
-        b.setPosition(100, 100);
-        b.tile.setCenterRatio();    // configure to rotate around itself
-
-        var i = new h2d.Interactive(b.tile.width, b.tile.height, b);
-        i.onOver = _ -> b.alpha = 0.5;
-        i.onOut = _ -> b.alpha = 1;
-        var g = new h2d.Graphics(s2d);
-        g.beginFill(0xFF00FF, .5);
-        g.drawCircle(200, 200, 100);*/
     
-        figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
+    private var colorProvider: ColorProvidable = new LocalColorProvider();
+    
+    private var wsClient: WebSocketClient;
 
-        ownPlayer = new OwnPlayer();
-        ownPlayer.playerId = 1; //TODO: Get playerId through websocket
-        ownPlayer.initializeOwnPlayer(figure, pool, tilePool, tf, wsClient, colorProvider);
-
-        players.push(ownPlayer);
-    }
-
-    private function log(text: String) {
-        tf.text = text;
-    }
-
-    override function update(dt:Float) {
-        super.update(dt);
-
-        for(player in players)
-            player.draw();
-
-        /*if (lost) return;
+    public override function draw(){
+        if (lost) return;
 
         var blockReachedBottom = if (Key.isPressed(Key.SPACE)) {
             while(!GameFieldChecker.checkBlockReachesBottom(figure.blocks, pool.usedBlocks)) {
@@ -151,11 +77,17 @@ class Game extends hxd.App {
     
                 //Create new Figure and notify wsClient
                 nextColor = colorProvider.getNextColor();
-                figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
+                figure = newFigureOf(nextColor, Game.BLOCK_START_X, Game.BLOCK_START_Y);
                 var wsMessage = new WebSocketMessage(CommandType.NewBlock, playerId, figure.blocks);
                 wsClient.sendWebSocketMessage(wsMessage);
             }
-        }*/
+        }
+    }
+
+    public function initializeOwnPlayer(figure: Figure, pool: BlockPool, tilePool: BlockTilePool, tf: Text, wsClient: WebSocketClient, colorProvider: ColorProvidable){
+        super.initialize(figure, pool, tilePool, tf);
+        this.wsClient = wsClient;
+        this.colorProvider = colorProvider;
     }
 
     private function newFigureOf(color: view.Color, x: Int, y: Int): Figure
@@ -170,23 +102,12 @@ class Game extends hxd.App {
             default: throw "No such type available";
         }
 
-    /*private inline function clearFullRows(fullRows: Array<Bool>): Void
+    private inline function clearFullRows(fullRows: Array<Bool>): Void
         for(i in 0...fullRows.length)
             if(fullRows[i]) {
                 trace('free row $i');
                 pool.freeRow(i);
                 pool.moveAllBlocksAboveRow(i, 0, 1);
             }
-                
-    //Needs more functionality
-    private function startNewGame(){
-        var fullRows: Array<Bool> = [ for(i in 0...FIELD_HEIGHT) true];
-        clearFullRows(fullRows);
-    }*/
 
-    static function main() {
-        Res.initEmbed();
-        new Game();
-    }
-    
 }
