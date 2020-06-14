@@ -26,27 +26,25 @@ class WebSocketMessage {
         var message: haxe.DynamicAccess<Dynamic> = Json.parse(jMessage);
 
         var command = CommandType.Id;
-        var playerId;
-        var data;
+        var playerId = -1;
+        var data: Any = null;
 
         var cnt = 0;
 
         for (key in message.keys()) {
             trace(key, message.get(key));
-            trace(key);
-            trace(message.get(key));
             cnt++;
             switch(cnt){
                 case 1: 
-                    data = message.get(key);
-                case 2:
                     playerId = message.get(key);
+                case 2:
+                    data = message.get(key);
                 case 3:
                     command = getCommandTypeFromNumber(message.get(key));
             }
         } 
 
-        return new WebSocketMessage(CommandType.Id, 1, 1);
+        return new WebSocketMessage(command, playerId, data);
     }
 
     private static function getCommandTypeFromNumber(number: Int): CommandType{

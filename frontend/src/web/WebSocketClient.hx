@@ -9,12 +9,19 @@ class WebSocketClient implements Observable {
 
     private var ws: WebSocket;
     private var isOpen: Bool = false;
+    private var receivedId: Bool = false;
+
+    private var webSocketURL: String;
 
     //public var players(default, null): Array<Int> = [];
 
     public dynamic function onNewPlayerCallback(playerId: Int) { };
 
     public function new (webSocketURL: String){
+        this.webSocketURL = webSocketURL;
+    }
+
+    public function start(){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
         ws.onopen = () -> {
@@ -35,8 +42,13 @@ class WebSocketClient implements Observable {
     }
 
     private function receiveWebSocketMessage(sWsMessage: String){
-        var wsMessage = WebSocketMessage.fromJson(sWsMessage);
-        //var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
+        var wsMessage;
+        if(!receivedId) {
+            wsMessage = WebSocketMessage.fromJson(sWsMessage);
+            receivedId = true;
+        }
+        else
+            wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
         
         if(wsMessage.command == CommandType.NewPlayer)
             onNewPlayerCallback(wsMessage.data);
