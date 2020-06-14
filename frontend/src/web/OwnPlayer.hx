@@ -1,16 +1,12 @@
 package web;
 
 import core.Constants;
-import view.LocalColorProvider;
 import view.Color;
 import logic.FigureBuilder;
 import hxd.Key;
 import logic.GameFieldChecker;
 import view.ColorProvidable;
 import core.models.Figure;
-import h2d.Text;
-import view.BlockTilePool;
-import logic.BlockPool;
 
 class OwnPlayer extends Player {
 
@@ -31,7 +27,7 @@ class OwnPlayer extends Player {
         figure = newFigureOf(nextColor, Constants.BLOCK_START_X, Constants.BLOCK_START_Y);
     }
 
-    public override function update() {
+    public override function updatePlayer() {
         if (lost) return;
 
         var blockReachedBottom: Bool = 
@@ -109,11 +105,11 @@ class OwnPlayer extends Player {
     }
 
     private inline function createNewFigure() {
-        //Create new Figure and notify wsClient
+        //Create new Figure //and notify wsClient
         nextColor = colorProvider.getNextColor();
         figure = newFigureOf(nextColor, Constants.BLOCK_START_X, Constants.BLOCK_START_Y);
-        var wsMessage = new WebSocketMessage(CommandType.NewBlock, playerId, figure.blocks);
-        wsClient.sendWebSocketMessage(wsMessage);
+        /*var wsMessage = new WebSocketMessage(CommandType.NewBlock, playerId, figure.blocks);
+        wsClient.sendWebSocketMessage(wsMessage);*/
     }
 
     private function newFigureOf(color: view.Color, x: Int, y: Int): Figure

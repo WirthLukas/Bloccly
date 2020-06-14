@@ -25,7 +25,7 @@ class Game extends hxd.App {
 
     //Multiplayer variables
     private var lost: Bool = false;
-    private var wsClient = new WebSocketClient("wss://echo.websocket.org"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
+    private var wsClient = new WebSocketClient("ws://localhost:8100/ws"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
     private var playerId = 1;
     private var players: Array<Player> = [];
     private var ownPlayer: OwnPlayer;
@@ -50,6 +50,11 @@ class Game extends hxd.App {
         g.drawCircle(200, 200, 100);*/
     
         // figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
+        wsClient.onNewPlayerCallback = function(playerId) {
+            var newPlayer: Player = new Player(colorProvider, s2d);
+            newPlayer.playerId = playerId;
+            players.push(newPlayer);
+        }
 
         ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d);
         ownPlayer.playerId = 1; //TODO: Get playerId through websocket
@@ -64,7 +69,7 @@ class Game extends hxd.App {
         // for(player in players)
         //     player.update();
 
-        players.forEach(p -> p.update());
+        players.forEach(p -> p.updatePlayer());
     }
 
     /*            

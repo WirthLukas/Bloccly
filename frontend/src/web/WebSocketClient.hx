@@ -1,20 +1,22 @@
 package web;
 
-import haxe.io.Bytes;
-import core.models.Block;
+import core.pattern.observer.Observable;
 import haxe.net.WebSocket;
 
-class WebSocketClient{
+using core.pattern.observer.ObservableExtender;
+
+class WebSocketClient implements Observable {
 
     private var ws: WebSocket;
     private var isOpen: Bool = false;
 
-    public var playerId(default, default): Int;
+    //public var players(default, null): Array<Int> = [];
+
+    public dynamic function onNewPlayerCallback(playerId: Int) { };
 
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
-        trace("testing");
         ws.onopen = () -> {
             this.isOpen = true;
         }
@@ -33,20 +35,14 @@ class WebSocketClient{
     }
 
     private function receiveWebSocketMessage(sWsMessage: String){
-        var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
+        var wsMessage = WebSocketMessage.fromJson(sWsMessage);
+        //var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
         
-        if(wsMessage.command == CommandType.Id){
-            
-        }
-        else if(wsMessage.command == CommandType.Loss){
-            
-        }
-        else if(wsMessage.command == CommandType.BlockUpdate){
-
-        }
-        else if(wsMessage.command == CommandType.NewBlock){
-
-        }
+        if(wsMessage.command == CommandType.NewPlayer)
+            onNewPlayerCallback(wsMessage.data);
+        else
+            this.notify(wsMessage);
+        
     }
           
     private function sendMessage(message: String)
