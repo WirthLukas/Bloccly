@@ -56,7 +56,7 @@ class Player implements Observer {
                     case CommandType.Loss:
                         lost = true;
                     case CommandType.BlockUpdate:
-                        pool.usedBlocks; // = wsMessage.data;
+                        pool.usedBlocks; // = wsMessage.data; //TODO: update usedBlocks
                     default: trace("Wrong CommandType");
                 }
 
