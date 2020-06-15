@@ -10,6 +10,8 @@ import h2d.Text;
 import view.BlockTilePool;
 import logic.BlockPool;
 
+using utils.ArrayTools;
+
 class Player implements Observer {
     public var playerId: Int;
     public var board: GameBoardViewComp;
@@ -69,7 +71,11 @@ class Player implements Observer {
                     case CommandType.Loss:
                         lost = true;
                     case CommandType.BlockUpdate:
-                        pool.usedBlocks; // = wsMessage.data; //TODO: update usedBlocks
+                        /*pool.clear(); // = wsMessage.data; //TODO: update usedBlocks
+                        if(Std.is(wsMessage.data, Array)){
+                            (wsMessage.data: Array).forEach(block -> pool.addBlock(block));
+                        }*/
+                            
                     default: trace("Wrong CommandType");
                 }
             }

@@ -11,6 +11,7 @@ import hxd.Res;
 import web.WebSocketClient;
 import web.Player;
 import web.OwnPlayer;
+import web.OtherPlayer;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
@@ -53,10 +54,13 @@ class Game extends hxd.App {
 
         wsClient = new WebSocketClient("ws://localhost:8100/ws");
         wsClient.onNewPlayerCallback = function(playerId) {
-            var newPlayer: Player = new Player(colorProvider, s2d);
+            var newPlayer: Player = new OtherPlayer(colorProvider, s2d, 40 + Constants.BOARD_WIDTH, 2);
             newPlayer.playerId = playerId;
+            newPlayer.init();
             players.push(newPlayer);
+            style.addObject(newPlayer.board);
             wsClient.addObserver(newPlayer);
+            trace("OtherPlayer added" + newPlayer.playerId);
         }
         
         ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d, 5, 2);
@@ -85,8 +89,6 @@ class Game extends hxd.App {
         style.addObject(ownPlayer.board);
         players.push(ownPlayer);
 
-        var ownPlayer2 = new OwnPlayer(colorProvider, wsClient, s2d, 40 + Constants.BOARD_WIDTH, 2);
-        ownPlayer2.playerId = 1; //TODO: Get playerId through websocket
         // ownPlayer2.onLoose = () -> {
         //     var b = new h2d.Flow(s2d);
         //     b.horizontalAlign = Middle;
@@ -106,10 +108,6 @@ class Game extends hxd.App {
 
         //     style.addObject(alert);
         // };
-
-        ownPlayer2.init();
-        style.addObject(ownPlayer2.board);
-        players.push(ownPlayer2);
 
         wsClient.addObserver(ownPlayer);
         wsClient.start();
