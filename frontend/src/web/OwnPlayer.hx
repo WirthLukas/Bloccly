@@ -23,12 +23,19 @@ class OwnPlayer extends Player {
 
     private var finale: Bool = false;
 
-    public function new(colorProvider: ColorProvidable, wsClient: WebSocketClient, parent: h2d.Object) {
-        super(colorProvider, parent);
+    public function new(
+        colorProvider: ColorProvidable,
+        wsClient: WebSocketClient,
+        parent: h2d.Object,
+        offsetX: Int = 0,
+        offsetY: Int = 0
+    ) {
+        super(colorProvider, parent, offsetX, offsetY);
         this.wsClient = wsClient;
     }
 
     override function init() {
+        super.init();
         // should be createNewFigure()
         // but in player, a color is already created
         figure = newFigureOf(nextColor, Constants.BLOCK_START_X, Constants.BLOCK_START_Y);
@@ -39,7 +46,7 @@ class OwnPlayer extends Player {
 
         if(music != null){
             //Play the music and loop it
-            music.play(true);
+            // music.play(true);
         }
     }
 
@@ -107,7 +114,7 @@ class OwnPlayer extends Player {
     }
 
     private inline function playerLost(): Bool
-        return figure.blocks.filter(block -> block.y < 0).length > 0;
+        return figure.blocks.filter(block -> block.y < 2).length > 0;
 
     private inline function clearFullRowsIfNeccessary() {
         //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
@@ -118,7 +125,7 @@ class OwnPlayer extends Player {
             trace('music change');
             music.dispose();
             music = Res.load('bc_int.mp3').toSound();
-            music.play(true);
+            // music.play(true);
             finale = true;
         }
 
@@ -162,7 +169,6 @@ class OwnPlayer extends Player {
         var rows = blocks.map(b -> b.y);
         ArraySort.sort(rows, (a, b) -> -(a - b));
         var highest = rows.pop();
-        trace(highest);
         return highest;
     }
 

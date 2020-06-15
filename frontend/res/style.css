@@ -1,14 +1,3 @@
-container {
-    max-width: 300;
-	layout: vertical;
-}
-
-/*alert {
-	max-width: 300;
-	layout: vertical;
-	background-color: #333;
-}*/
-
 alert #box {
 	background: #333;
 	width: 100;
@@ -35,8 +24,11 @@ alert button {
 	background: #555;
 }
 
+alert button:hover {
+	background: #48a;
+}
+
 alert #btn-wrapper {
-	/* align: middle right; */
 	fill-width: false;
 	align: right middle;
 }
@@ -53,23 +45,10 @@ alert #text-wrapper {
 	background: transparent;
 }
 
-button {
-	background: #999;
-	height: 30;
-}
-
 button.highlight {
 	background: #a33;
 }
 
 button text {
 	align: middle middle;
-}
-
-button:hover {
-	background: #a34;
-}
-
-button:active {
-	background: #222;
 }

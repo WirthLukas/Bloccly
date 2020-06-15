@@ -56,22 +56,19 @@ class GameFieldChecker {
 
     //Returns true, if a Block from a Figure reaches the bottom of the playing field...
     //... or the edge of another block
-    public static function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
+    public static function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool {
         if (getRowOfLowestBlock(figureBlocks) >= Constants.FIELD_HEIGHT) {
             return true;
         }
         
         for(block in figureBlocks){
-            // if(block.y >= Constants.FIELD_HEIGHT) //Bottom of playing field (Game.FIELD_HEIGHT), CURRENT VALUE IS ONLY FOR TESTING PURPOSES
-            //     return true;
-            // else 
-                for(usedBlock in usedBlocks){
-                    //If the Block is one above a used Block on the y Axis
-                    //Blocks which are from the Figure are filtered out
-                    if(block.y + 1 == usedBlock.y && block.x == usedBlock.x)
-                        if(figureBlocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0)
-                            return true;   
-                }
+            for(usedBlock in usedBlocks){
+                //If the Block is one above a used Block on the y Axis
+                //Blocks which are from the Figure are filtered out
+                if(block.y + 1 == usedBlock.y && block.x == usedBlock.x)
+                    if(figureBlocks.filter(figureBlock -> figureBlock.x == usedBlock.x && figureBlock.y == usedBlock.y).length == 0)
+                        return true;   
+            }
         }
         return false;
     }
