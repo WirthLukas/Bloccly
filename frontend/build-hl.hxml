@@ -5,5 +5,5 @@
 -hl bin/hl/game.hl
 -cp src
 -main Game
--D windowSize=900x600
+-D windowSize=900x700
 # -D resourcesPath=res/sounds

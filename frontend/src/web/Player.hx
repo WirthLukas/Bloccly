@@ -1,5 +1,7 @@
 package web;
 
+import core.Constants;
+import view.components.GameBoardViewComp;
 import core.pattern.observer.Observable;
 import core.pattern.observer.Observer;
 import view.Color;
@@ -9,28 +11,32 @@ import view.BlockTilePool;
 import logic.BlockPool;
 
 class Player implements Observer {
-    public var playerId(default,default): Int;
+    public var playerId: Int;
+    public var board: GameBoardViewComp;
 
     private var parent: h2d.Object;
-    private var tf: Text;
 
     private var pool = new BlockPool();
     private var tilePool = new BlockTilePool();
     private var colorProvider: ColorProvidable;
     private var nextColor: Color;
 
+    private var offsetX: Int;
+    private var offsetY: Int;
+
     private var lost: Bool = false;
 
-    public function new(colorProvider: ColorProvidable, parent: h2d.Object){
+    public function new(colorProvider: ColorProvidable, parent: h2d.Object, offsetX: Int = 0, offsetY: Int = 0) {
         this.parent = parent;
-        this.tf = new h2d.Text(hxd.res.DefaultFont.get(), parent);
         this.colorProvider = colorProvider;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
 
         // every time a new block is added to the game field
         // this block will added to a block tile (which displays the block)
         pool.onAdded = block -> tilePool
             .getBlockTile(block, parent)
-            .setOffset(5)
+            .setOffset(offsetX, offsetY)
             .withColor(nextColor)
             .setBlock(block)
             .show();
@@ -43,6 +49,12 @@ class Player implements Observer {
     }
 
     public function init() {
+        board = new GameBoardViewComp(
+            Constants.BOARD_WIDTH,
+            Constants.BOARD_HEIGHT - Constants.BLOCK_WIDTH + 3,
+            parent);
+
+        board.setPosition(offsetX + board.x - 5, board.y + 2 * Constants.BLOCK_HEIGHT);
     }
 
     public function update(sender: Observable, ?data: Any): Void{
