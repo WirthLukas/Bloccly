@@ -5,4 +5,5 @@ enum CommandType {
     Loss;
     BlockUpdate;
     NewBlock;
+    NewPlayer;
 }

@@ -1,18 +1,14 @@
 package web;
 
-import core.contracts.Placeable;
+import core.pattern.observer.Observable;
+import core.pattern.observer.Observer;
 import view.Color;
-import logic.FigureBuilder;
-import hxd.Key;
-import logic.GameFieldChecker;
 import view.ColorProvidable;
-import view.LocalColorProvider;
-import core.models.Figure;
 import h2d.Text;
 import view.BlockTilePool;
 import logic.BlockPool;
 
-class Player {
+class Player implements Observer {
     public var playerId(default,default): Int;
 
     private var parent: h2d.Object;
@@ -42,9 +38,31 @@ class Player {
         nextColor = colorProvider.getNextColor();
     }
 
-    public function update() {
+    public function updatePlayer() {
     }
 
     public function init() {
     }
+
+    public function update(sender: Observable, ?data: Any): Void{
+        if(Std.is(sender, WebSocketClient)){
+            var wsMessage : WebSocketMessage = cast data;
+
+            if(wsMessage.command == CommandType.Id)
+                playerId = wsMessage.playerId;
+
+            else if(wsMessage.playerId == playerId){
+                switch(wsMessage.command){
+                    case CommandType.Loss:
+                        lost = true;
+                    case CommandType.BlockUpdate:
+                        pool.usedBlocks; // = wsMessage.data;
+                    default: trace("Wrong CommandType");
+                }
+
+            }
+        }
+    }
+
+
 }
