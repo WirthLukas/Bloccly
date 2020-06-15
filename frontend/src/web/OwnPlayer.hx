@@ -19,7 +19,7 @@ import logic.BlockPool;
 class OwnPlayer extends Player {
 
     private var updateCount: Int = 0;
-    private var resetCount: Int = 10;
+    private var resetCount: Int = 30;
     
     private var wsClient: WebSocketClient;
     private var figure: Figure;
@@ -44,7 +44,6 @@ class OwnPlayer extends Player {
         if(music != null){
             //Play the music and loop it
             music.play(true);
-            // music.watch(() -> trace('watching the misc'));
         }
     }
 
@@ -65,10 +64,11 @@ class OwnPlayer extends Player {
 
             if(playerLost()) {
                 lost = true;
-                tf.text = "You lost the game.";
                 trace("You lost the game.");
+                music.dispose();
                 var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, pool.usedBlocks);
                 wsClient.sendWebSocketMessage(wsMessage);
+                onLoose();
             }
             else {
                 clearFullRowsIfNeccessary();
@@ -168,5 +168,8 @@ class OwnPlayer extends Player {
         var highest = rows.pop();
         trace(highest);
         return highest;
+    }
+
+    public dynamic function onLoose() {
     }
 }

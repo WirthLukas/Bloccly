@@ -9,7 +9,7 @@ class ButtonComp extends Flow implements h2d.domkit.Object {
             <text public id="labelTxt" />
         </button>
 
-        public var label(get, set): String;
+    public var label(get, set): String;
 	function get_label() return labelTxt.text;
 	function set_label(s) {
 		labelTxt.text = s;

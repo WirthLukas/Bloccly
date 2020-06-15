@@ -1,8 +1,14 @@
+import h3d.shader.ColorKey;
+import h3d.shader.ColorAdd;
+import hxd.res.DefaultFont;
+import hxd.res.Resource;
+import h2d.Flow.FlowAlign;
 import hxd.res.Sound;
 import core.Constants;
 import h2d.Flow.FlowLayout;
 import view.components.ContainerComp;
 import view.components.GameBoardViewComp;
+import view.components.AlertComp;
 import web.WebSocketMessage;
 import view.ColorProvidable;
 import view.LocalColorProvider;
@@ -37,6 +43,8 @@ class Game extends hxd.App {
     private var ownPlayer: OwnPlayer;
 
     var center : h2d.Flow;
+    var bottom: h2d.Flow;
+    var style: h2d.domkit.Style;
 
     public function new() {
         super();
@@ -59,16 +67,6 @@ class Game extends hxd.App {
     
         // figure = newFigureOf(nextColor, BLOCK_START_X, BLOCK_START_Y);
 
-        ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d);
-        ownPlayer.playerId = 1; //TODO: Get playerId through websocket
-
-        players.push(ownPlayer);
-
-        center = new h2d.Flow(s2d);
-        center.horizontalAlign = center.verticalAlign = Middle;
-        // center.horizontalAlign = Right;
-        onResize();
-
         // var root = new ContainerComp(center);
         // root.btn.label = "Button";
         var root = new GameBoardViewComp(
@@ -78,17 +76,52 @@ class Game extends hxd.App {
 
         // root.setPosition(root.x + 2, root.y);
 
-        var style = new h2d.domkit.Style();
+        style = new h2d.domkit.Style();
 		style.load(hxd.Res.style);
         style.addObject(root);
         style.allowInspect = true;
 
+        // center = new h2d.Flow(s2d);
+        // center.horizontalAlign = center.verticalAlign = Middle;
+        // // center.horizontalAlign = Right;
+        // onResize();
+
+        bottom = new h2d.Flow(s2d);
+        bottom.horizontalAlign = Middle;
+        bottom.verticalAlign = FlowAlign.Bottom;
+        onResize();
+
+        ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d);
+        ownPlayer.playerId = 1; //TODO: Get playerId through websocket
+        ownPlayer.onLoose = () -> {
+            var b = new h2d.Flow(s2d);
+            b.horizontalAlign = Middle;
+            b.verticalAlign = FlowAlign.Bottom;
+            b.minWidth = b.maxWidth = s2d.width;
+		    b.minHeight = b.maxHeight = s2d.height;
+
+            var font = DefaultFont.get();
+            font.resizeTo(30);
+
+            var alert = new AlertComp("You lost the game :(", Res.mail.toTile() , b);
+            alert.icon.addShader(new h3d.shader.ColorKey(256));
+            alert.alertText.font = font;
+            alert.alertBtn.onClick = () -> {
+                alert.remove();
+            }
+
+            style.addObject(alert);
+        };
         ownPlayer.init();
+
+        players.push(ownPlayer);
     }
 
     override function onResize() {
-		center.minWidth = center.maxWidth = s2d.width;
-		center.minHeight = center.maxHeight = s2d.height;
+		// center.minWidth = center.maxWidth = s2d.width;
+        // center.minHeight = center.maxHeight = s2d.height;
+        bottom.minWidth = bottom.maxWidth = s2d.width;
+		bottom.minHeight = bottom.maxHeight = s2d.height;
 	}
 
     override function update(dt:Float) {
@@ -98,6 +131,7 @@ class Game extends hxd.App {
         //     player.update();
 
         players.forEach(p -> p.update());
+        style.sync();
     }
 
     /*            
@@ -109,6 +143,7 @@ class Game extends hxd.App {
 
     static function main() {
         #if hl
+        Resource.LIVE_UPDATE = true;
         Res.initLocal();
         #else
         Res.initEmbed();
