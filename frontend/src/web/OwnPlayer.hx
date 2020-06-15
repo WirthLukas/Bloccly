@@ -11,6 +11,7 @@ import hxd.Key;
 import logic.GameFieldChecker;
 import view.ColorProvidable;
 import core.models.Figure;
+import logic.Score;
 
 class OwnPlayer extends Player {
 
@@ -46,7 +47,7 @@ class OwnPlayer extends Player {
 
         if(music != null){
             //Play the music and loop it
-            // music.play(true);
+            music.play(true, 0.2);
         }
     }
 
@@ -125,12 +126,15 @@ class OwnPlayer extends Player {
             trace('music change');
             music.dispose();
             music = Res.load('bc_int.mp3').toSound();
-            // music.play(true);
+            music.play(true, 0.2);
             finale = true;
         }
 
-        if (fullRows.filter(row -> row).length >= 1) {
-            clearFullRows(fullRows); 
+        var fullRowsCount = fullRows.filter(row -> row).length;
+
+        if (fullRowsCount >= 1) {
+            clearFullRows(fullRows);
+            Score.getInstance().addScore(fullRowsCount * 10); 
         }
          
         var wsMessage = new WebSocketMessage(CommandType.BlockUpdate, playerId, pool.usedBlocks);
