@@ -1,0 +1,3 @@
+-lib heaps
+-hl packing.hl
+-main hxd.fmt.pak.Build

@@ -1,117 +1,149 @@
-import core.models.Block;
-import h2d.Text;
+import h3d.shader.ColorKey;
+import hxd.res.DefaultFont;
+import hxd.res.Resource;
+import h2d.Flow.FlowAlign;
+import core.Constants;
+import view.components.AlertComp;
+import view.ColorProvidable;
+import view.LocalColorProvider;
 import hxd.Res;
-import hxd.Key;
 
-import core.models.Figure;
-import logic.BlockPool;
-import logic.FigureBuilder;
-import view.BlockTile;
 import web.WebSocketClient;
-import logic.GameFieldChecker;
+import web.Player;
+import web.OwnPlayer;
 
 // For Extension Method
 using core.pattern.observer.ObservableExtender;
+using utils.ArrayTools;
 
 class Game extends hxd.App {
+    private var colorProvider: ColorProvidable = new LocalColorProvider();
+    public static var test = 10;
 
-    private var figure: Figure;
-    private var pool: BlockPool;
-    private var tf: Text;
-    private var i = 0;
-    private var wsClient: WebSocketClient;
-    private var gameFieldChecker: GameFieldChecker;
+    //Multiplayer variables
+    private var lost: Bool = false;
+    private var wsClient: WebSocketClient; //= new WebSocketClient("ws://localhost:8100/ws"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
+    private var playerId = 1;
+    private var players: Array<Player> = [];
+    private var ownPlayer: OwnPlayer;
 
-    private var updateCount: Int = 0;
-    private var resetCount: Int = 50;
+    var bottom: h2d.Flow;
+    var style: h2d.domkit.Style;
 
     public function new() {
         super();
-        pool = new BlockPool();
-        // pool.setAddListener(block -> {
-        //     new BlockTile(block, s2d);
-        //     // i++;
-        //     // log("" + i);
-        // });
-
-        pool.onAdded = block -> new BlockTile(block, s2d);
-
-        wsClient = new WebSocketClient("wss://echo.websocket.org");
-        gameFieldChecker = new GameFieldChecker();
-        gameFieldChecker.addObserver(wsClient);
-        gameFieldChecker.addObserver(pool);
     }
 
-    override function init() {
-        tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
+    override function loadAssets(onLoaded:() -> Void) {
+        super.loadAssets(onLoaded);
+        // new hxd.fmt.pak.Loader(s2d, onLoaded);
+    }
+
+    override function init() {         
+        // var root = new GameBoardViewComp(
+        //     Constants.BOARD_WIDTH,
+        //     Constants.BOARD_HEIGHT - Constants.BLOCK_WIDTH + 3,
+        //     s2d);
+
+        // root.setPosition(root.x, root.y + 2 * Constants.BLOCK_HEIGHT);
+
+        style = new h2d.domkit.Style();
+		style.load(hxd.Res.style);
+        style.allowInspect = true;
+
+        wsClient = new WebSocketClient("ws://localhost:8100/ws");
+        wsClient.onNewPlayerCallback = function(playerId) {
+            var newPlayer: Player = new Player(colorProvider, s2d);
+            newPlayer.playerId = playerId;
+            players.push(newPlayer);
+            wsClient.addObserver(newPlayer);
+        }
         
-        /*var tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
-        tf.text = "Hello World !";
+        ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d, 5, 2);
+        ownPlayer.playerId = 1; //TODO: Get playerId through websocket
+        ownPlayer.onLoose = () -> {
+            var b = new h2d.Flow(s2d);
+            b.horizontalAlign = Middle;
+            b.verticalAlign = FlowAlign.Bottom;
+            b.minWidth = b.maxWidth = s2d.width;
+		    b.minHeight = b.maxHeight = s2d.height;
 
-        b = new Bitmap(Tile.fromColor(0xFF0000, 60, 60), s2d);
-        b.setPosition(100, 100);
-        b.tile.setCenterRatio();    // configure to rotate around itself
+            var font = DefaultFont.get();
+            font.resizeTo(30);
 
-        var i = new h2d.Interactive(b.tile.width, b.tile.height, b);
-        i.onOver = _ -> b.alpha = 0.5;
-        i.onOut = _ -> b.alpha = 1;
-        var g = new h2d.Graphics(s2d);
-        g.beginFill(0xFF00FF, .5);
-        g.drawCircle(200, 200, 100);*/
-    
-        figure = FigureBuilder.getYellow(pool, 10, 0);
-        figure.addObserver(wsClient);        
+            var alert = new AlertComp("You lost the game :(", Res.mail.toTile() , b);
+            alert.icon.addShader(new h3d.shader.ColorKey(256));
+            alert.alertText.font = font;
+            alert.alertBtn.onClick = () -> {
+                alert.remove();
+            }
+
+            style.addObject(alert);
+        };
+
+        ownPlayer.init();
+        style.addObject(ownPlayer.board);
+        players.push(ownPlayer);
+
+        var ownPlayer2 = new OwnPlayer(colorProvider, wsClient, s2d, 40 + Constants.BOARD_WIDTH, 2);
+        ownPlayer2.playerId = 1; //TODO: Get playerId through websocket
+        // ownPlayer2.onLoose = () -> {
+        //     var b = new h2d.Flow(s2d);
+        //     b.horizontalAlign = Middle;
+        //     b.verticalAlign = FlowAlign.Bottom;
+        //     b.minWidth = b.maxWidth = s2d.width;
+		//     b.minHeight = b.maxHeight = s2d.height;
+
+        //     var font = DefaultFont.get();
+        //     font.resizeTo(30);
+
+        //     var alert = new AlertComp("You lost the game :(", Res.mail.toTile() , b);
+        //     alert.icon.addShader(new h3d.shader.ColorKey(256));
+        //     alert.alertText.font = font;
+        //     alert.alertBtn.onClick = () -> {
+        //         alert.remove();
+        //     }
+
+        //     style.addObject(alert);
+        // };
+
+        ownPlayer2.init();
+        style.addObject(ownPlayer2.board);
+        players.push(ownPlayer2);
+
+        wsClient.addObserver(ownPlayer);
+        wsClient.start();
     }
 
-    private function log(text: String) {
-        tf.text = text;
-    }
+    override function onResize() {
+        bottom.minWidth = bottom.maxWidth = s2d.width;
+		bottom.minHeight = bottom.maxHeight = s2d.height;
+	}
 
     override function update(dt:Float) {
         super.update(dt);
 
-        if (Key.isPressed(Key.DOWN)) {
-            figure.moveDown();
-        } else if (Key.isPressed(Key.LEFT)) {
-            figure.moveLeft();
-        } else if (Key.isPressed(Key.RIGHT)) {
-            figure.moveRight();
-        } else if (Key.isPressed(Key.UP)) {
-            figure.rotate();
-        }
-
-        updateCount++;
-
-        if (updateCount == resetCount) {
-            updateCount = 0;
-            figure.moveDown();
-        }
-      
-        if(gameFieldChecker.checkBlockReachesBottom(figure, pool.usedBlocks)){
-            //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
-            gameFieldChecker.checkRowFull(pool.usedBlocks);
-            //Create new Figure
-            figure = FigureBuilder.getYellow(pool, 5, 5);
-            figure.addObserver(wsClient);
-            trace("Block reached Bottom");
-        }   
-
+        // players.forEach(p -> p.update());
+        players.forEach(p -> p.updatePlayer());
+        style.sync();
     }
 
-    private function newFigureOf(color: view.Color, x: Int, y: Int): Figure
-        return switch color {
-            case Orange: FigureBuilder.getOrange(pool, x, y);
-            case Cyan: FigureBuilder.getCyan(pool, x, y);
-            case Blue: FigureBuilder.getBlue(pool, x, y);
-            case Green: FigureBuilder.getGreen(pool, x, y);
-            case Purple: FigureBuilder.getPurple(pool, x, y);
-            case Red: FigureBuilder.getRed(pool, x, y);
-            case Yellow: FigureBuilder.getYellow(pool, x, y);
-            default: throw "No such type available";
-        }
+    /*            
+    //Needs more functionality
+    private function startNewGame(){
+        var fullRows: Array<Bool> = [ for(i in 0...FIELD_HEIGHT) true];
+        clearFullRows(fullRows);
+    }*/
 
     static function main() {
+        #if hl
+        Resource.LIVE_UPDATE = true;
+        Res.initLocal();
+        // Res.initPak();
+        #else
         Res.initEmbed();
+        #end
         new Game();
     }
+    
 }

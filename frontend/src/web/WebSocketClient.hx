@@ -1,24 +1,32 @@
 package web;
 
-import core.pattern.observer.Observer;
 import core.pattern.observer.Observable;
 import haxe.net.WebSocket;
 
-class WebSocketClient implements Observer{
+using core.pattern.observer.ObservableExtender;
+
+class WebSocketClient implements Observable {
 
     private var ws: WebSocket;
     private var isOpen: Bool = false;
+    private var receivedId: Bool = false;
+
+    private var webSocketURL: String;
+
+    public dynamic function onNewPlayerCallback(playerId: Int) { };
 
     public function new (webSocketURL: String){
+        this.webSocketURL = webSocketURL;
+    }
+
+    public function start(){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
 
-        trace("testing");
         ws.onopen = () -> {
             this.isOpen = true;
         }
         
-        //TODO: Handle incoming message
-        ws.onmessageString = message -> trace("message: "+message)
+        ws.onmessageString = message -> receiveWebSocketMessage(message);
 
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
@@ -30,20 +38,30 @@ class WebSocketClient implements Observer{
         });
         #end
     }
+
+    private function receiveWebSocketMessage(sWsMessage: String){
+        var wsMessage;
+        if(!receivedId) {
+            wsMessage = WebSocketMessage.fromJson(sWsMessage, true);
+            receivedId = true;
+        }
+        else
+            wsMessage = WebSocketMessage.fromJson(sWsMessage, true);
+        
+        if(wsMessage.command == CommandType.NewPlayer)
+            onNewPlayerCallback(wsMessage.data);
+        else
+            this.notify(wsMessage);
+        
+    }
           
     private function sendMessage(message: String)
         if (isOpen) ws.sendString(message);
         else trace("Client is not yet open");
 
-    public function update(sender: Observable, ?data: Any){
-        trace("WebSocketClient update: " + data + " from " + sender);
-        if(Type.getClassName(Type.getClass(sender)) == "core.models.Figure"){
-            trace("Figure moved " + data);
-            //sendMessage("Figure moved " + data);
-        }
-        if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
-            trace("Rows are full " + data);
-            //sendMessage("Rows are full: " + data);
-        }
+    public function sendWebSocketMessage(wsMessage: WebSocketMessage){
+        var wsMessage = WebSocketMessage.toJson(wsMessage);
+        sendMessage(wsMessage);
     }
+    
 }

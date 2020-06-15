@@ -1,6 +1,8 @@
 -lib heaps
 -lib haxe-ws
+-lib domkit
 -js bin/js/game.js
 -cp src
 -main Game
 -debug
+# -D windowSize=900x600

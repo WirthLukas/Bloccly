@@ -25,4 +25,8 @@ class Block implements Observable {
         setPosition(x, y);
         return this;
     }
+
+    public inline function toString(): String {
+        return 'Block { $x, $y }';
+    }
 }
