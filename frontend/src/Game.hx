@@ -37,7 +37,7 @@ class Game extends hxd.App {
 
     //Multiplayer variables
     private var lost: Bool = false;
-    private var wsClient = new WebSocketClient("wss://echo.websocket.org"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
+    private var wsClient: WebSocketClient; //= new WebSocketClient("ws://localhost:8100/ws"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
     private var playerId = 1;
     private var players: Array<Player> = [];
     private var ownPlayer: OwnPlayer;
@@ -77,7 +77,7 @@ class Game extends hxd.App {
         // root.setPosition(root.x + 2, root.y);
 
         style = new h2d.domkit.Style();
-		style.load(hxd.Res.style);
+		    style.load(hxd.Res.style);
         style.addObject(root);
         style.allowInspect = true;
 
@@ -91,6 +91,14 @@ class Game extends hxd.App {
         bottom.verticalAlign = FlowAlign.Bottom;
         onResize();
 
+        wsClient = new WebSocketClient("ws://localhost:8100/ws");
+        wsClient.onNewPlayerCallback = function(playerId) {
+            var newPlayer: Player = new Player(colorProvider, s2d);
+            newPlayer.playerId = playerId;
+            players.push(newPlayer);
+            wsClient.addObserver(newPlayer);
+        }
+        
         ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d);
         ownPlayer.playerId = 1; //TODO: Get playerId through websocket
         ownPlayer.onLoose = () -> {
@@ -112,9 +120,15 @@ class Game extends hxd.App {
 
             style.addObject(alert);
         };
+
+        
         ownPlayer.init();
 
         players.push(ownPlayer);
+
+        wsClient.addObserver(ownPlayer);
+        
+        wsClient.start();
     }
 
     override function onResize() {
@@ -130,7 +144,8 @@ class Game extends hxd.App {
         // for(player in players)
         //     player.update();
 
-        players.forEach(p -> p.update());
+        // players.forEach(p -> p.update());
+        players.forEach(p -> p.updatePlayer());
         style.sync();
     }
 
