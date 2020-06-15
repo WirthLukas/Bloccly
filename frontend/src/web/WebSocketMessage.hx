@@ -71,7 +71,7 @@ class WebSocketMessage {
         return blockString;
     }
 
-    public static function fromJson(jMessage: String, initial: Bool): WebSocketMessage{
+    public static function fromJson(jMessage: String): WebSocketMessage{
         var message: haxe.DynamicAccess<Dynamic> = Json.parse(jMessage);
 
         var command = CommandType.Id;
@@ -83,13 +83,19 @@ class WebSocketMessage {
         for (key in message.keys()) {
             cnt++;
             switch(cnt){
-                case 1: 
+                /*case 1: 
                     playerId = message.get(key);
                 case 2:
                     //data = message.get(key); //as pure Json
                     data = message.get(key); //as serialized Blocks
                 case 3:
+                    command = getCommandTypeFromNumber(message.get(key));*/
+                case 1:
                     command = getCommandTypeFromNumber(message.get(key));
+                case 2:
+                    data = message.get(key);
+                case 3:
+                    playerId = message.get(key);
             }
         } 
 
