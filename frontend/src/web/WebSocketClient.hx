@@ -13,8 +13,6 @@ class WebSocketClient implements Observable {
 
     private var webSocketURL: String;
 
-    //public var players(default, null): Array<Int> = [];
-
     public dynamic function onNewPlayerCallback(playerId: Int) { };
 
     public function new (webSocketURL: String){
@@ -64,7 +62,6 @@ class WebSocketClient implements Observable {
     public function sendWebSocketMessage(wsMessage: WebSocketMessage){
         var wsMessage = WebSocketMessage.toJson(wsMessage);
         sendMessage(wsMessage);
-        //sendMessage(WebSocketMessage.toJson(wsMessage));
     }
     
 }

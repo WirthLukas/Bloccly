@@ -1,7 +1,6 @@
 package web;
 
 import core.models.Block;
-import haxe.Exception;
 import haxe.Json;
 import haxe.Unserializer;
 import haxe.Serializer;
@@ -25,7 +24,7 @@ class WebSocketMessage {
         return cast Unserializer.run(sMessage);
 
     public static function toJson(wsMessage: WebSocketMessage): String{
-        var jMessage = "{ ";
+        var jMessage = "{";
 
         jMessage += "\"Command\":"+getNumberFromCommandType(wsMessage.command)+","
             + "\"PlayerId\":"+wsMessage.playerId+",\"Data\":";
@@ -33,76 +32,65 @@ class WebSocketMessage {
         switch(wsMessage.command){
             case CommandType.Loss:
                 if(Std.is(wsMessage.data, Array)){
-                    var blockArray: Array<Block> = cast wsMessage.data;
-                    jMessage += "[";
-                    for(block in blockArray){
-                        jMessage += "{";
-                        if(Std.is(block, Block)){
-                            jMessage += "\"X\":" + block.x + "\"Y\":" + block.y;
-                        }
-                        jMessage += "}";
-                    }
+                    var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
+                    jMessage += "[" + blockArrayJson;
+                    jMessage = jMessage.substr(0, jMessage.length - 1);
                     jMessage += "]";
                 } else 
-                    throw new Exception("Wrong Data");
+                    return "Wrong Data";
             case CommandType.BlockUpdate:
                 if(Std.is(wsMessage.data, Array)){
-                    var blockArray: Array<Block> = cast wsMessage.data;
-                    jMessage += "[";
-                    for(block in blockArray){
-                        jMessage += "{";
-                        if(Std.is(block, Block)){
-                            jMessage += "\"X\":" + block.x + "\"Y\":" + block.y;
-                        }
-                        jMessage += "}";
-                    }
+                    var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
+                    jMessage += "[" + blockArrayJson;
+                    jMessage = jMessage.substr(0, jMessage.length - 1);
                     jMessage += "]";
                 } else 
-                    throw new Exception("Wrong Data");
+                    return "Wrong Data";
             default:
-                throw new Exception("Wrong CommandType");
+                return "Wrong CommandType";
         }
 
-        jMessage += " }";
-
-        //jMessesage += "\n";
+        jMessage += "}";
 
         return jMessage;
     }
-        
+
+    private static function blocksToJson(blockArray: Array<Block>): String{
+        var blockString: String = "";
+        for(block in blockArray){
+            blockString += "{";
+            if(Std.is(block, Block)){
+                blockString += "\"X\":" + block.x + "," + "\"Y\":" + block.y;
+            }
+            blockString += "},";
+        }
+        return blockString;
+    }
 
     public static function fromJson(jMessage: String, initial: Bool): WebSocketMessage{
-        if(initial){
-            var message: haxe.DynamicAccess<Dynamic> = Json.parse(jMessage);
+        var message: haxe.DynamicAccess<Dynamic> = Json.parse(jMessage);
 
-            var command = CommandType.Id;
-            var playerId = -1;
-            var data: Any = null;
-    
-            var cnt = 0;
-    
-            for (key in message.keys()) {
-                trace(key, message.get(key));
-                cnt++;
-                switch(cnt){
-                    case 1: 
-                        playerId = message.get(key);
-                    case 2:
-                        data = message.get(key);
-                    case 3:
-                        command = getCommandTypeFromNumber(message.get(key));
-                }
-            } 
-            return new WebSocketMessage(command, playerId, data);
-        } else {
-            var command: Int = cast jMessage.charAt(12); //Position of Value from Command
-            var playerId: Int = cast jMessage.charAt(25); //Position of Value from PlayerId
-            var dataString = jMessage.substr(34, jMessage.length - 34);
-            //TODO: get blocks out of dataString
-        }
+        var command = CommandType.Id;
+        var playerId = -1;
+        var data: Any = null;
 
-        return new WebSocketMessage(CommandType.Loss, 0, 0);
+        var cnt = 0;
+
+        for (key in message.keys()) {
+            cnt++;
+            switch(cnt){
+                case 1: 
+                    playerId = message.get(key);
+                case 2:
+                    data = message.get(key);
+                case 3:
+                    command = getCommandTypeFromNumber(message.get(key));
+            }
+        } 
+        return new WebSocketMessage(command, playerId, data);
     }
+
+    
 
     private static function getCommandTypeFromNumber(number: Int): CommandType{
         switch(number){
