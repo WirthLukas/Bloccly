@@ -44,11 +44,11 @@ class WebSocketClient implements Observable {
     private function receiveWebSocketMessage(sWsMessage: String){
         var wsMessage;
         if(!receivedId) {
-            wsMessage = WebSocketMessage.fromJson(sWsMessage);
+            wsMessage = WebSocketMessage.fromJson(sWsMessage, true);
             receivedId = true;
         }
         else
-            wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
+            wsMessage = WebSocketMessage.fromJson(sWsMessage, true);
         
         if(wsMessage.command == CommandType.NewPlayer)
             onNewPlayerCallback(wsMessage.data);
@@ -62,7 +62,9 @@ class WebSocketClient implements Observable {
         else trace("Client is not yet open");
 
     public function sendWebSocketMessage(wsMessage: WebSocketMessage){
-        sendMessage(WebSocketMessage.serializeMessage(wsMessage));
+        var wsMessage = WebSocketMessage.toJson(wsMessage);
+        sendMessage(wsMessage);
+        //sendMessage(WebSocketMessage.toJson(wsMessage));
     }
     
 }
