@@ -1,3 +1,4 @@
+import hxd.res.Sound;
 import core.Constants;
 import h2d.Flow.FlowLayout;
 import view.components.ContainerComp;
@@ -107,7 +108,11 @@ class Game extends hxd.App {
     }*/
 
     static function main() {
+        #if hl
+        Res.initLocal();
+        #else
         Res.initEmbed();
+        #end
         new Game();
     }
     

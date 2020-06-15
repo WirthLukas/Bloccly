@@ -6,3 +6,4 @@
 -cp src
 -main Game
 -D windowSize=900x600
+# -D resourcesPath=res/sounds
