@@ -1,7 +1,9 @@
 -lib heaps
 -lib hlsdl
+-lib domkit
 -lib haxe-ws
 -hl bin/hl/game.hl
 -cp src
 -main Game
 -D windowSize=900x600
+# -D resourcesPath=res/sounds

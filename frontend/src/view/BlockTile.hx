@@ -14,6 +14,8 @@ class BlockTile implements Observer {
     private var block: Block;
     private var tile: Tile;
     private var b: Bitmap;
+    private var offsetX: Int;
+    private var offsetY: Int;
 
     public function new(parent: Object) {
         // tile.setPosition(block.x * tile.width, block.y * tile.height);
@@ -23,7 +25,13 @@ class BlockTile implements Observer {
     public function setBlock(block: Block): BlockTile {
         this.block = block;
         block.addObserver(this);
-        b.setPosition(block.x * tile.width, block.y * tile.height);
+        b.setPosition(offsetX + block.x * tile.width, offsetY + block.y * tile.height);
+        return this;
+    }
+
+    public function setOffset(x: Int = 0, y: Int = 0) {
+        offsetX = x;
+        offsetY = y;
         return this;
     }
 
@@ -48,7 +56,7 @@ class BlockTile implements Observer {
     public function update(sender: Observable, ?data: Any): Void {
         // check if data is a block
         var block = (data : Block);
-        b.setPosition(block.x * tile.width, block.y * tile.height);
+        b.setPosition(offsetX + block.x * tile.width, offsetY + block.y * tile.height);
     }
 
     public function hide()

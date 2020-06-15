@@ -1,5 +1,9 @@
 package web;
 
+import haxe.ds.ArraySort;
+import core.models.Block;
+import hxd.Res;
+import hxd.res.Sound;
 import core.Constants;
 import view.Color;
 import logic.FigureBuilder;
@@ -11,10 +15,13 @@ import core.models.Figure;
 class OwnPlayer extends Player {
 
     private var updateCount: Int = 0;
-    private var resetCount: Int = 50;
+    private var resetCount: Int = 30;
     
     private var wsClient: WebSocketClient;
     private var figure: Figure;
+    private var music: Null<Sound> = null;
+
+    private var finale: Bool = false;
 
     public function new(colorProvider: ColorProvidable, wsClient: WebSocketClient, parent: h2d.Object) {
         super(colorProvider, parent);
@@ -25,6 +32,15 @@ class OwnPlayer extends Player {
         // should be createNewFigure()
         // but in player, a color is already created
         figure = newFigureOf(nextColor, Constants.BLOCK_START_X, Constants.BLOCK_START_Y);
+
+        if (Sound.supportedFormat(Mp3)) {
+            music = Res.load('bc_n.mp3').toSound();
+        }
+
+        if(music != null){
+            //Play the music and loop it
+            music.play(true);
+        }
     }
 
     public override function updatePlayer() {
@@ -44,10 +60,11 @@ class OwnPlayer extends Player {
 
             if(playerLost()) {
                 lost = true;
-                tf.text = "You lost the game.";
                 trace("You lost the game.");
+                music.dispose();
                 var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, pool.usedBlocks);
                 wsClient.sendWebSocketMessage(wsMessage);
+                onLoose();
             }
             else {
                 clearFullRowsIfNeccessary();
@@ -93,15 +110,24 @@ class OwnPlayer extends Player {
         return figure.blocks.filter(block -> block.y < 0).length > 0;
 
     private inline function clearFullRowsIfNeccessary() {
-         //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
-         var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
+        //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
+        var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
 
-         if (fullRows.map(row -> row).length >= 1) {
-             clearFullRows(fullRows); 
-         }
+        if ( getRowOfHighestBlock(pool.usedBlocks) <= 8 && music != null && !finale) {
+            //music.stop();
+            trace('music change');
+            music.dispose();
+            music = Res.load('bc_int.mp3').toSound();
+            music.play(true);
+            finale = true;
+        }
+
+        if (fullRows.filter(row -> row).length >= 1) {
+            clearFullRows(fullRows); 
+        }
          
-         var wsMessage = new WebSocketMessage(CommandType.BlockUpdate, playerId, pool.usedBlocks);
-         wsClient.sendWebSocketMessage(wsMessage);
+        var wsMessage = new WebSocketMessage(CommandType.BlockUpdate, playerId, pool.usedBlocks);
+        wsClient.sendWebSocketMessage(wsMessage);
     }
 
     private inline function createNewFigure() {
@@ -132,4 +158,14 @@ class OwnPlayer extends Player {
                 pool.moveAllBlocksAboveRow(i, 0, 1);
             }
 
+    private static function getRowOfHighestBlock(blocks: Array<Block>): Int {
+        var rows = blocks.map(b -> b.y);
+        ArraySort.sort(rows, (a, b) -> -(a - b));
+        var highest = rows.pop();
+        trace(highest);
+        return highest;
+    }
+
+    public dynamic function onLoose() {
+    }
 }

@@ -30,6 +30,7 @@ class Player implements Observer {
         // this block will added to a block tile (which displays the block)
         pool.onAdded = block -> tilePool
             .getBlockTile(block, parent)
+            .setOffset(5)
             .withColor(nextColor)
             .setBlock(block)
             .show();

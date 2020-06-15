@@ -1,0 +1,75 @@
+container {
+    max-width: 300;
+	layout: vertical;
+}
+
+/*alert {
+	max-width: 300;
+	layout: vertical;
+	background-color: #333;
+}*/
+
+alert #box {
+	background: #333;
+	width: 100;
+	height: 100;
+	background-alpha: 1;
+}
+
+alert #box #icon {
+	align: middle middle;
+}
+
+alert flow {
+	/*width: 300;
+	height: 100;*/
+	layout: horizontal;
+	background: #888;
+	background-alpha: 0.8;
+	fill-width: true;
+}
+
+alert button {
+	width: 100;
+	height: 100;
+	background: #555;
+}
+
+alert #btn-wrapper {
+	/* align: middle right; */
+	fill-width: false;
+	align: right middle;
+}
+
+alert text {
+	align: middle middle;
+	color: #fff;
+}
+
+alert #text-wrapper {
+	padding: 10;
+	width: 700;
+	align: right middle;
+	background: transparent;
+}
+
+button {
+	background: #999;
+	height: 30;
+}
+
+button.highlight {
+	background: #a33;
+}
+
+button text {
+	align: middle middle;
+}
+
+button:hover {
+	background: #a34;
+}
+
+button:active {
+	background: #222;
+}
