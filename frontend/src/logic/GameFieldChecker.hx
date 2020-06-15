@@ -1,5 +1,6 @@
 package logic;
 
+import haxe.ds.ArraySort;
 import core.Constants;
 import core.models.Figure;
 import core.models.Block;
@@ -56,10 +57,16 @@ class GameFieldChecker {
     //Returns true, if a Block from a Figure reaches the bottom of the playing field...
     //... or the edge of another block
     public static function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
+        trace('compare: ${figureBlocks}');
+        
+        if (getRowOfLowestBlock(figureBlocks) >= Constants.FIELD_HEIGHT) {
+            return true;
+        }
+        
         for(block in figureBlocks){
-            if(block.y >= 15) //Bottom of playing field (Game.FIELD_HEIGHT), CURRENT VALUE IS ONLY FOR TESTING PURPOSES
-                return true;
-            else 
+            // if(block.y >= Constants.FIELD_HEIGHT) //Bottom of playing field (Game.FIELD_HEIGHT), CURRENT VALUE IS ONLY FOR TESTING PURPOSES
+            //     return true;
+            // else 
                 for(usedBlock in usedBlocks){
                     //If the Block is one above a used Block on the y Axis
                     //Blocks which are from the Figure are filtered out
@@ -71,4 +78,11 @@ class GameFieldChecker {
         return false;
     }
 
+    private static function getRowOfLowestBlock(blocks: Array<Block>): Int {
+        var rows = blocks.map(b -> b.y);
+        ArraySort.sort(rows, (a, b) -> a - b);
+        var lowest = rows.pop();
+        trace(lowest);
+        return lowest;
+    }
 }

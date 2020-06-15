@@ -1,3 +1,7 @@
+import core.Constants;
+import h2d.Flow.FlowLayout;
+import view.components.ContainerComp;
+import view.components.GameBoardViewComp;
 import web.WebSocketMessage;
 import view.ColorProvidable;
 import view.LocalColorProvider;
@@ -22,6 +26,7 @@ using utils.ArrayTools;
 
 class Game extends hxd.App {
     private var colorProvider: ColorProvidable = new LocalColorProvider();
+    public static var test = 10;
 
     //Multiplayer variables
     private var lost: Bool = false;
@@ -29,6 +34,8 @@ class Game extends hxd.App {
     private var playerId = 1;
     private var players: Array<Player> = [];
     private var ownPlayer: OwnPlayer;
+
+    var center : h2d.Flow;
 
     public function new() {
         super();
@@ -53,10 +60,35 @@ class Game extends hxd.App {
 
         ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d);
         ownPlayer.playerId = 1; //TODO: Get playerId through websocket
-        ownPlayer.init();
 
         players.push(ownPlayer);
+
+        center = new h2d.Flow(s2d);
+        center.horizontalAlign = center.verticalAlign = Middle;
+        // center.horizontalAlign = Right;
+        onResize();
+
+        // var root = new ContainerComp(center);
+        // root.btn.label = "Button";
+        var root = new GameBoardViewComp(
+            Constants.BLOCK_WIDTH * Constants.FIELD_WIDTH,
+            Constants.BLOCK_HEIGHT * (Constants.FIELD_HEIGHT + 1),
+            s2d);
+
+        // root.setPosition(root.x + 2, root.y);
+
+        var style = new h2d.domkit.Style();
+		style.load(hxd.Res.style);
+        style.addObject(root);
+        style.allowInspect = true;
+
+        ownPlayer.init();
     }
+
+    override function onResize() {
+		center.minWidth = center.maxWidth = s2d.width;
+		center.minHeight = center.maxHeight = s2d.height;
+	}
 
     override function update(dt:Float) {
         super.update(dt);

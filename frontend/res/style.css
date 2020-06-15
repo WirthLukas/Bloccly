@@ -1,0 +1,26 @@
+container {
+    max-width: 300;
+	layout: vertical;
+}
+
+button {
+	background: #333;
+	fill-width: true;
+	height: 30;
+}
+
+button.highlight {
+	background: #a33;
+}
+
+button text {
+	align: middle middle;
+}
+
+button:hover {
+	background: #a34;
+}
+
+button:active {
+	background: #222;
+}
