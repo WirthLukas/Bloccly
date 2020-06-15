@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"fmt"
+	"strconv"
 
 	Model "../models"
 )
@@ -30,9 +31,15 @@ func (pool *Pool) Start() {
 		case client := <-pool.Register:
 			pool.Clients[client] = true
 			fmt.Println("[INFO]: Size of Connection Pool: ", len(pool.Clients))
-			for client := range pool.Clients {
+			for c := range pool.Clients {
 				fmt.Printf("[INFO]: A new challenger (%+v) has appeared \n", client.ID)
-				//client.Conn.WriteJSON(Message{})
+				if c.ID != client.ID {
+					_ =  c.Conn.WriteJSON(Model.CommandDto{
+						Command:  Model.NewPlayer.CommandToInt(),
+						PlayerId: client.ID,
+						Data:     strconv.Itoa(client.ID),
+					})
+				}
 			}
 			break
 		case client := <-pool.Unregister:

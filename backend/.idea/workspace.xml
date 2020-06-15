@@ -20,14 +20,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb487f8e-df7a-4971-beae-5090f41dde5e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/dto.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend.exe" beforeDir="false" afterPath="$PROJECT_DIR$/backend.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/blocks/blocktypes.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/block.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/player.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/websocket/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/websocket/client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/websocket/pool.go" beforeDir="false" afterPath="$PROJECT_DIR$/websocket/pool.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/backend.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/block.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/dto.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/websocket/client.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/websocket/pool.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/websocket/websocket.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +48,7 @@
   </component>
   <component name="GOROOT" path="C:\Go" />
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1bnpSiq7lEJdTWIizl63X313zVi" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -66,20 +70,21 @@
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Patrick\Schule\Projects\bloccly\backend" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\Bloccly\backend" />
+      <recent name="D:\Projects\Bloccly\backend\src\main" />
       <recent name="D:\Projects\Bloccly\backend\models" />
       <recent name="D:\Patrick\Schule\Projects\bloccly\backend\models\blocks" />
       <recent name="D:\Patrick\Schule\Projects\bloccly\backend\models" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Patrick\Schule\Projects\bloccly\backend" />
     </key>
   </component>
   <component name="RunManager">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="backend" />
-      <working_directory value="$PROJECT_DIR$/" />
+      <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/main.go" />
       <directory value="$PROJECT_DIR$/" />
@@ -112,34 +117,42 @@
     </state>
     <state x="623" y="182" key="#GOPATH/0.0.1536.864@0.0.1536.864" timestamp="1592054480437" />
     <state x="890" y="276" key="#GOPATH/0.0.2194.1234@0.0.2194.1234" timestamp="1589277776093" />
+    <state x="223" y="87" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592252203752">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="223" y="87" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.864@0.0.1536.864" timestamp="1592252203752" />
     <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592058991680">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="540" y="234" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.864@0.0.1536.864" timestamp="1592058991680" />
-    <state x="615" y="260" key="FileChooserDialogImpl" timestamp="1592054552143">
+    <state x="479" y="52" key="#go_build_main.go" timestamp="1592251557511">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state x="615" y="260" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1592054552143" />
+    <state x="479" y="52" key="#go_build_main.go/0.0.1536.864@0.0.1536.864" timestamp="1592251557511" />
+    <state x="615" y="260" key="FileChooserDialogImpl" timestamp="1592252200417">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="615" y="260" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1592252200417" />
     <state x="878" y="372" key="FileChooserDialogImpl/0.0.2194.1234@0.0.2194.1234" timestamp="1589883532323" />
-    <state width="1493" height="269" key="GridCell.Tab.0.bottom" timestamp="1592249591237">
+    <state width="1493" height="216" key="GridCell.Tab.0.bottom" timestamp="1592252032090">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="269" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1592249591237" />
+    <state width="1493" height="216" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1592252032090" />
     <state width="2151" height="339" key="GridCell.Tab.0.bottom/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
-    <state width="1493" height="269" key="GridCell.Tab.0.center" timestamp="1592249591237">
+    <state width="1493" height="216" key="GridCell.Tab.0.center" timestamp="1592252032090">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="269" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1592249591237" />
+    <state width="1493" height="216" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1592252032090" />
     <state width="2151" height="339" key="GridCell.Tab.0.center/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
-    <state width="1493" height="269" key="GridCell.Tab.0.left" timestamp="1592249591237">
+    <state width="1493" height="216" key="GridCell.Tab.0.left" timestamp="1592252032089">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="269" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1592249591237" />
+    <state width="1493" height="216" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1592252032089" />
     <state width="2151" height="339" key="GridCell.Tab.0.left/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
-    <state width="1493" height="269" key="GridCell.Tab.0.right" timestamp="1592249591237">
+    <state width="1493" height="216" key="GridCell.Tab.0.right" timestamp="1592252032090">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1493" height="269" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1592249591237" />
+    <state width="1493" height="216" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1592252032090" />
     <state width="2151" height="339" key="GridCell.Tab.0.right/0.0.2194.1234@0.0.2194.1234" timestamp="1590666200699" />
     <state width="1493" height="269" key="GridCell.Tab.1.bottom" timestamp="1592249591238">
       <screen x="0" y="0" width="1536" height="864" />

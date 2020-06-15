@@ -23,6 +23,10 @@ func (command CommandType) CommandToString() string {
 	return [...]string{"Id", "Loss", "BlockUpdate", "NewBlock", "NewPlayer"}[command]
 }
 
+func (command CommandType) CommandToInt() int {
+	return [...]int{0, 1, 2, 3, 4}[command]
+}
+
 type CommandDto struct {
 	Command int `json:"command"`
 	PlayerId int `json:"playerId"`
