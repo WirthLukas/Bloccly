@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
+
+	Model "../models"
 )
 
 type Client struct {
@@ -14,17 +16,16 @@ type Client struct {
 
 type Message struct {
 	Type int
-	Body string
-}
-
-type NewBlockMessage struct {
-	Blocktype int `json:int`
+	Body []byte
 }
 
 func (c *Client) Read() {
 	defer func() {
 		c.Pool.Unregister <- c
-		c.Conn.Close()
+		err := c.Conn.Close()
+		if err != nil {
+			log.Println("[INFO]: Client unregistered ", err)
+		}
 	}()
 
 	for {
@@ -34,8 +35,14 @@ func (c *Client) Read() {
 			return
 		}
 
-		message := Message{Type: messageType, Body: string(p)}
-		fmt.Printf("[INFO] Message Received: %+v\n", message)
-		c.Pool.Broadcast <- message
+		message := Message{Type: messageType, Body: p}
+		fmt.Printf("[INFO]: Message Received. JSON contains: %+v\n", string(message.Body))
+		clientCommand := Model.ParseJSON(message.Body)
+		fmt.Printf("[INFO]: Command received from Player %+v. Command is %+v. Data contains << %+v >>.\n",
+			clientCommand.PlayerId,
+			Model.Command(clientCommand.Command).CommandToString(),
+			clientCommand.Data)
+
+		c.Pool.Broadcast <- *clientCommand
 	}
 }
