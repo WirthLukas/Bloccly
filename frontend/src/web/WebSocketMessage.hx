@@ -1,5 +1,6 @@
 package web;
 
+import h3d.pass.Default;
 import core.models.Block;
 import haxe.Json;
 import haxe.Unserializer;
@@ -32,18 +33,21 @@ class WebSocketMessage {
         switch(wsMessage.command){
             case CommandType.Loss:
                 if(Std.is(wsMessage.data, Array)){
+                    /*
                     var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
                     jMessage += "[" + blockArrayJson;
                     jMessage = jMessage.substr(0, jMessage.length - 1);
-                    jMessage += "]";
+                    jMessage += "]";*/
+                    jMessage += "\"" + "520" + "\""; //To be score
                 } else 
                     return "Wrong Data";
             case CommandType.BlockUpdate:
                 if(Std.is(wsMessage.data, Array)){
-                    var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
+                    /*var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
                     jMessage += "[" + blockArrayJson;
                     jMessage = jMessage.substr(0, jMessage.length - 1);
-                    jMessage += "]";
+                    jMessage += "]";*/
+                    jMessage += "\"" + Serializer.run(wsMessage.data) + "\"";
                 } else 
                     return "Wrong Data";
             default:
@@ -82,15 +86,18 @@ class WebSocketMessage {
                 case 1: 
                     playerId = message.get(key);
                 case 2:
-                    data = message.get(key);
+                    //data = message.get(key); //as pure Json
+                    data = message.get(key); //as serialized Blocks
                 case 3:
                     command = getCommandTypeFromNumber(message.get(key));
             }
         } 
+
+        if(command == CommandType.BlockUpdate)
+            data = Unserializer.run(data);
+
         return new WebSocketMessage(command, playerId, data);
     }
-
-    
 
     private static function getCommandTypeFromNumber(number: Int): CommandType{
         switch(number){

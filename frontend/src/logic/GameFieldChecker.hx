@@ -57,8 +57,6 @@ class GameFieldChecker {
     //Returns true, if a Block from a Figure reaches the bottom of the playing field...
     //... or the edge of another block
     public static function checkBlockReachesBottom(figureBlocks: Array<Block>, usedBlocks: Array<Block>): Bool{
-        trace('compare: ${figureBlocks}');
-        
         if (getRowOfLowestBlock(figureBlocks) >= Constants.FIELD_HEIGHT) {
             return true;
         }
@@ -82,7 +80,6 @@ class GameFieldChecker {
         var rows = blocks.map(b -> b.y);
         ArraySort.sort(rows, (a, b) -> a - b);
         var lowest = rows.pop();
-        trace(lowest);
         return lowest;
     }
 }

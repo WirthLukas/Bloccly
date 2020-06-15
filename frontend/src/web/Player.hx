@@ -60,7 +60,6 @@ class Player implements Observer {
                         pool.usedBlocks; // = wsMessage.data; //TODO: update usedBlocks
                     default: trace("Wrong CommandType");
                 }
-
             }
         }
     }
