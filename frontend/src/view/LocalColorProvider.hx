@@ -7,7 +7,6 @@ class LocalColorProvider implements ColorProvidable {
     }
 
     public function getNextColor(): Color {
-
         return newColor();
     }
 

@@ -1,11 +1,13 @@
 package utils;
 
+import haxe.ds.ArraySort;
+
 class ArrayTools {
     @:generic
-    public static function isEmpty<T>(array: Array<T>): Bool return array.length == 0;
+    public static inline function isEmpty<T>(array: Array<T>): Bool return array.length == 0;
 
     @:generic
-    public static function forEach<T>(array: Array<T>, action: (item: T) -> Void)
+    public static inline function forEach<T>(array: Array<T>, action: (item: T) -> Void): Void
         for (item in array) 
             action(item);
 }

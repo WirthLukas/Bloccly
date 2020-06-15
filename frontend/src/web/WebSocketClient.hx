@@ -1,13 +1,15 @@
 package web;
 
-import core.pattern.observer.Observer;
-import core.pattern.observer.Observable;
+import haxe.io.Bytes;
+import core.models.Block;
 import haxe.net.WebSocket;
 
-class WebSocketClient implements Observer{
+class WebSocketClient{
 
     private var ws: WebSocket;
     private var isOpen: Bool = false;
+
+    public var playerId(default, default): Int;
 
     public function new (webSocketURL: String){
         ws = WebSocket.create(webSocketURL, ['echo-protocol'], false);
@@ -17,8 +19,7 @@ class WebSocketClient implements Observer{
             this.isOpen = true;
         }
         
-        //TODO: Handle incoming message
-        ws.onmessageString = message -> trace("message: "+message);
+        ws.onmessageString = message -> receiveWebSocketMessage(message);
 
         //New Thread -> WebSocket is checking for Messages from specified Server
         #if sys
@@ -30,20 +31,30 @@ class WebSocketClient implements Observer{
         });
         #end
     }
+
+    private function receiveWebSocketMessage(sWsMessage: String){
+        var wsMessage = WebSocketMessage.unserializeMessage(sWsMessage);
+        
+        if(wsMessage.command == CommandType.Id){
+            
+        }
+        else if(wsMessage.command == CommandType.Loss){
+            
+        }
+        else if(wsMessage.command == CommandType.BlockUpdate){
+
+        }
+        else if(wsMessage.command == CommandType.NewBlock){
+
+        }
+    }
           
     private function sendMessage(message: String)
         if (isOpen) ws.sendString(message);
         else trace("Client is not yet open");
 
-    public function update(sender: Observable, ?data: Any){
-        trace("WebSocketClient update: " + data + " from " + sender);
-        if(Type.getClassName(Type.getClass(sender)) == "core.models.Figure"){
-            trace("Figure moved " + data);
-            //sendMessage("Figure moved " + data);
-        }
-        if(Type.getClassName(Type.getClass(sender)) == "logic.GameFieldChecker"){
-            trace("Rows are full " + data);
-            //sendMessage("Rows are full: " + data);
-        }
+    public function sendWebSocketMessage(wsMessage: WebSocketMessage){
+        sendMessage(WebSocketMessage.serializeMessage(wsMessage));
     }
+    
 }
