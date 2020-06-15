@@ -42,14 +42,14 @@ class WebSocketClient implements Observable {
     private function receiveWebSocketMessage(sWsMessage: String){
         var wsMessage;
         if(!receivedId) {
-            wsMessage = WebSocketMessage.fromJson(sWsMessage, true);
+            wsMessage = WebSocketMessage.fromJson(sWsMessage);
             receivedId = true;
         }
         else
-            wsMessage = WebSocketMessage.fromJson(sWsMessage, true);
+            wsMessage = WebSocketMessage.fromJson(sWsMessage);
         
         if(wsMessage.command == CommandType.NewPlayer)
-            onNewPlayerCallback(wsMessage.data);
+            onNewPlayerCallback(wsMessage.playerId);
         else
             this.notify(wsMessage);
         
