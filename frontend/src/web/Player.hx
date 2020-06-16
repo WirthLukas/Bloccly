@@ -9,6 +9,7 @@ import view.ColorProvidable;
 import h2d.Text;
 import view.BlockTilePool;
 import logic.BlockPool;
+import core.models.Block;
 
 using utils.ArrayTools;
 
@@ -65,16 +66,16 @@ class Player implements Observer {
 
             if(wsMessage.command == CommandType.Id)
                 playerId = wsMessage.playerId;
-
             else if(wsMessage.playerId == playerId){
                 switch(wsMessage.command){
                     case CommandType.Loss:
                         lost = true;
                     case CommandType.BlockUpdate:
-                        /*pool.clear(); // = wsMessage.data; //TODO: update usedBlocks
-                        if(Std.is(wsMessage.data, Array)){
-                            (wsMessage.data: Array).forEach(block -> pool.addBlock(block));
-                        }*/
+                        pool.clear(); // = wsMessage.data; //TODO: update usedBlocks
+
+                        if(Std.is(wsMessage.data, Array)) {
+                            (wsMessage.data: Array<Block>).forEach(block -> pool.getBlock().setPosition(block.x, block.y));
+                        }
                             
                     default: trace("Wrong CommandType");
                 }
