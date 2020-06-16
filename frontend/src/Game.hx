@@ -54,13 +54,16 @@ class Game extends hxd.App {
 
         wsClient = new WebSocketClient("ws://172.17.216.217:8100/ws");
         wsClient.onNewPlayerCallback = function(playerId) {
-            var newPlayer: Player = new OtherPlayer(colorProvider, s2d, 40 + Constants.BOARD_WIDTH, 2);
-            newPlayer.playerId = playerId;
-            newPlayer.init();
-            players.push(newPlayer);
-            style.addObject(newPlayer.board);
-            wsClient.addObserver(newPlayer);
-            trace("OtherPlayer added" + newPlayer.playerId);
+            if(playerId != players[0].playerId){
+                var newPlayer: Player = new OtherPlayer(colorProvider, s2d, 40 + Constants.BOARD_WIDTH, 2);
+                newPlayer.playerId = playerId;
+                newPlayer.init();
+                players.push(newPlayer);
+                style.addObject(newPlayer.board);
+                wsClient.addObserver(newPlayer);
+                trace("OtherPlayer added" + newPlayer.playerId);
+            } else 
+                trace("NewPlayer of OwnPlayer");
         }
         
         ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d, 5, 2);
