@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
+	"strconv"
 
+	"../data"
 	Model "../models"
 )
 
@@ -43,6 +45,15 @@ func (c *Client) Read() {
 			Model.Command(clientCommand.Command).CommandToString(),
 			clientCommand.Data)
 
-		c.Pool.Broadcast <- *clientCommand
+		if clientCommand.Command == Model.Loss.CommandToInt() {
+			repo := data.ConnectToDb()
+			points, err := strconv.Atoi(clientCommand.Data)
+
+			if err == nil {
+				data.WriteToDb(repo, clientCommand.PlayerId, points)
+			}
+		} else if clientCommand.Command == Model.BlockUpdate.CommandToInt() {
+			c.Pool.Broadcast <- *clientCommand
+		}
 	}
 }
