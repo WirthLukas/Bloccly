@@ -18,7 +18,7 @@ func main() {
 	repo := data.ConnectToDb()
 	fmt.Println("Trying to write string on DB")
 	data.WriteToDb(repo, 1, 200)
-	data.ReadFromDb(repo)
+	data.ReadScores(repo)
 
 	/*fmt.Println(">> Bloccly Go Server v0.1 <<")
 	//fmt.Println(Block.Blue.Block())
