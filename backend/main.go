@@ -6,13 +6,10 @@ import (
 	"strconv"
 
 	"./data"
+	Model "./models"
 	"./websocket"
 )
 
-type Message struct {
-	Command int `json:command`
-	Data int `json:data`
-}
 
 func main() {
 	port := 8100
@@ -20,23 +17,28 @@ func main() {
 	fmt.Println("Connect to DB ...\n\r")
 	repo := data.ConnectToDb()
 	fmt.Println("Trying to write string on DB")
-	data.WriteToDb(repo, "Bochis", 200)
+	data.WriteToDb(repo, 1, 200)
 	data.ReadFromDb(repo)
 
-	fmt.Println(">> Bloccly Go Server v0.1 <<")
+	/*fmt.Println(">> Bloccly Go Server v0.1 <<")
 	//fmt.Println(Block.Blue.Block())
 	setupRoutes()
 	fmt.Printf("[INFO]: Server running on crack and alcohol %+v\n", port)
-	http.ListenAndServe(":" + strconv.Itoa(port), nil)
+	http.ListenAndServe(":" + strconv.Itoa(port), nil)*/
 
 
+	fmt.Println(">> Bloccly Go Server v0.2 <<")
+	//fmt.Println(Block.Blue.Block())
+	setupRoutes()
+	fmt.Printf("[INFO]: Server running on port %+v, stress and depression. \n", port)
+	_ = http.ListenAndServe(":"+strconv.Itoa(port), nil)
 }
 
 func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 	fmt.Println("[INFO]: WebSocket Endpoint Hit")
 	conn, err := websocket.Upgrade(w, r)
 	if err != nil {
-		fmt.Fprintf(w, "%+v\n", err)
+		_, _ = fmt.Fprintf(w, "%+v\n", err)
 	}
 
 	client := &websocket.Client{
@@ -64,9 +66,10 @@ func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 		client.ID = id
 	}
 
-	client.Conn.WriteJSON(Message{
-		Command: 0,
-		Data:    id,
+	_ = client.Conn.WriteJSON(Model.CommandDto{
+		Command:  0,
+		PlayerId: id,
+		Data:     strconv.Itoa(id),
 	})
 	pool.Register <- client
 	client.Read()

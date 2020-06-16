@@ -24,9 +24,9 @@ func ConnectToDb() *Repository {
 	return &repo
 }
 
-func WriteToDb(repository *Repository, name string, points int) {
+func WriteToDb(repository *Repository, playerid int, points int) {
 	err := r.DB("bloccly").Table("scores").Insert(map[string]string{
-		"name": name,
+		"name": strconv.Itoa(playerid),
 		"points": strconv.Itoa(points),
 	}).Exec(repository.Session)
 
@@ -57,6 +57,37 @@ func ReadFromDb(repository *Repository) {
 
 	var names []interface{}
 	err = res.All(&names)
+	fmt.Println(names)
+
+	if err != nil {
+		fmt.Println("Error at scanning database result!")
+		return
+	}
+
+	for _, element := range names{
+		fmt.Println(element)
+	}
+}
+
+func readScores(repository *Repository) {
+	res, err := r.DB("bloccly").Table("scores").Run(repository.Session)/*.Filter(map[string]interface{}{
+		"tag": "name",
+	}).Run(repository.Session)*/
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Close()
+
+	if res.IsNil() {
+		fmt.Println("No rows found!")
+		return
+	}
+
+	var names []interface{}
+	err = res.All(&names)
+	fmt.Println(names)
 
 	if err != nil {
 		fmt.Println("Error at scanning database result!")
