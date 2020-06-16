@@ -52,7 +52,7 @@ class Game extends hxd.App {
 		style.load(hxd.Res.style);
         style.allowInspect = true;
 
-        wsClient = new WebSocketClient("ws://localhost:8100/ws");
+        wsClient = new WebSocketClient("ws://172.17.216.217:8100/ws");
         wsClient.onNewPlayerCallback = function(playerId) {
             var newPlayer: Player = new OtherPlayer(colorProvider, s2d, 40 + Constants.BOARD_WIDTH, 2);
             newPlayer.playerId = playerId;
