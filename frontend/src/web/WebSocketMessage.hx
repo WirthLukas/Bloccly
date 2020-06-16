@@ -33,14 +33,13 @@ class WebSocketMessage {
         switch(wsMessage.command){
             case CommandType.Loss:
                 if(Std.is(wsMessage.data, Array)){
-                    /*
-                    var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
+                    /*var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
                     jMessage += "[" + blockArrayJson;
                     jMessage = jMessage.substr(0, jMessage.length - 1);
                     jMessage += "]";*/
-                    jMessage += "\"" + "520" + "\""; //To be score
+                    jMessage += "\"" + Serializer.run(wsMessage.data) + "\"";
                 } else 
-                    return "Wrong Data";
+                    jMessage += "\"" + "520" + "\""; //To be score
             case CommandType.BlockUpdate:
                 if(Std.is(wsMessage.data, Array)){
                     /*var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
