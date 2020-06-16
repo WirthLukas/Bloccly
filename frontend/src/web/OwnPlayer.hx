@@ -70,7 +70,9 @@ class OwnPlayer extends Player {
                 lost = true;
                 trace("You lost the game.");
                 music.dispose();
-                var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, /*pool.usedBlocks*/Score.getInstance().score);
+
+                var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, Score.getInstance().score);
+
                 wsClient.sendWebSocketMessage(wsMessage);
                 onLose();
             }
