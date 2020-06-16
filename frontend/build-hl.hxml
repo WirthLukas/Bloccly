@@ -7,4 +7,5 @@
 -cp src
 -main Game
 -D windowSize=900x700
+# -D displayMode=FullscreenResize
 # -D resourcesPath=res/sounds

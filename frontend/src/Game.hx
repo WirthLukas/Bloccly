@@ -44,7 +44,7 @@ class Game extends hxd.App {
         // new hxd.fmt.pak.Loader(s2d, onLoaded);
     }
 
-    override function init() {         
+    override function init() {      
         viewFont = DefaultFont.get();
         viewFont.resizeTo(30);
 
@@ -61,12 +61,13 @@ class Game extends hxd.App {
                    row += Constants.BOARD_HEIGHT; 
                 } 
 
-                var newPlayer: Player = new OtherPlayer(colorProvider, s2d, xOffset, row * yOffset);
+                var newPlayer: OtherPlayer = new OtherPlayer(colorProvider, s2d, xOffset, row * yOffset);
                 newPlayer.playerId = playerId;
                 newPlayer.init();
                 newPlayer.onLose = function() {
                     players.remove(newPlayer);
-                }
+                    // newPlayer.dispose();
+                };
                 players.push(newPlayer);
                 style.addObject(newPlayer.board);
                 wsClient.addObserver(newPlayer);

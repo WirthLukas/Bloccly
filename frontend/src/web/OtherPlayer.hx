@@ -39,4 +39,9 @@ class OtherPlayer extends Player implements Observer {
             }
         }
     }
+
+    public function dispose() {
+        this.board.remove();
+        this.pool.clear();
+    }
 }
