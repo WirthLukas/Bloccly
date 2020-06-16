@@ -71,7 +71,7 @@ class Player implements Observer {
                     case CommandType.Loss:
                         lost = true;
                     case CommandType.BlockUpdate:
-                        pool.clear(); // = wsMessage.data; //TODO: update usedBlocks
+                        pool.clear(); 
 
                         if(Std.is(wsMessage.data, Array)) {
                             (wsMessage.data: Array<Block>).forEach(block -> pool.getBlock().setPosition(block.x, block.y));
