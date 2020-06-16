@@ -25,22 +25,28 @@ func NewPool() *Pool {
 
 
 func (pool *Pool) Start() {
-	//TODO: Change messages
 	for {
 		select {
 		case client := <-pool.Register:
 			pool.Clients[client] = true
+			fmt.Printf("[INFO]: A new challenger (%+v) has appeared \n", client.ID)
 			fmt.Println("[INFO]: Size of Connection Pool: ", len(pool.Clients))
 			for c := range pool.Clients {
-				fmt.Printf("[INFO]: A new challenger (%+v) has appeared \n", client.ID)
 				if c.ID != client.ID {
 					_ =  c.Conn.WriteJSON(Model.CommandDto{
 						Command:  Model.NewPlayer.CommandToInt(),
 						PlayerId: client.ID,
 						Data:     strconv.Itoa(client.ID),
 					})
+
+					_ =  client.Conn.WriteJSON(Model.CommandDto{
+						Command:  Model.NewPlayer.CommandToInt(),
+						PlayerId: c.ID,
+						Data:     strconv.Itoa(c.ID),
+					})
 				}
 			}
+
 			break
 		case client := <-pool.Unregister:
 			delete(pool.Clients, client)
