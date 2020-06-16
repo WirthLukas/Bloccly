@@ -11,13 +11,6 @@ import (
 
 func main() {
 	port := 8100
-
-	fmt.Println("Connect to DB ...\n\r")
-	repo := data.ConnectToDb()
-	fmt.Println("Trying to write string on DB")
-	data.WriteToDb(repo, 1, 200)
-	data.ReadScores(repo)
-
 	fmt.Println(">> Bloccly Go Server v1.0 <<")
 	setupRoutes()
 	fmt.Printf("[INFO]: Server running on port %+v.\n", port)
