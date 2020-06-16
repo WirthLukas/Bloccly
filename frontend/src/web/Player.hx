@@ -48,7 +48,7 @@ class Player implements Observer {
     }
 
     public function updatePlayer() {
-    }
+    }   
 
     public function init() {
         board = new GameBoardViewComp(

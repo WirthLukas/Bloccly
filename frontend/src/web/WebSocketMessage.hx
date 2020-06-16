@@ -38,7 +38,7 @@ class WebSocketMessage {
                     jMessage += "[" + blockArrayJson;
                     jMessage = jMessage.substr(0, jMessage.length - 1);
                     jMessage += "]";*/
-                    jMessage += "\"" + "520" + "\""; //To be score
+                    jMessage += "\"" + wsMessage.data + "\""; //To be score
                 } else 
                     return "Wrong Data";
             case CommandType.BlockUpdate:
