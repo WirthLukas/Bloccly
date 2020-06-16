@@ -52,6 +52,8 @@ func (c *Client) Read() {
 			if err == nil {
 				data.WriteToDb(repo, clientCommand.PlayerId, points)
 			}
+
+			c.Pool.Broadcast <- *clientCommand
 		} else if clientCommand.Command == Model.BlockUpdate.CommandToInt() {
 			c.Pool.Broadcast <- *clientCommand
 		}

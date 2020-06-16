@@ -25,7 +25,6 @@ func NewPool() *Pool {
 
 
 func (pool *Pool) Start() {
-	//TODO: Change messages
 	for {
 		select {
 		case client := <-pool.Register:
@@ -47,6 +46,7 @@ func (pool *Pool) Start() {
 					})
 				}
 			}
+
 			break
 		case client := <-pool.Unregister:
 			delete(pool.Clients, client)
