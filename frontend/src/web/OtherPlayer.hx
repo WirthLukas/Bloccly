@@ -26,6 +26,7 @@ class OtherPlayer extends Player implements Observer {
                 switch(wsMessage.command){
                     case CommandType.Loss:
                         lost = true;
+                        onLose();
                     case CommandType.BlockUpdate:
                         pool.clear(); 
 

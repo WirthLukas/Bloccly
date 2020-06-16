@@ -179,6 +179,5 @@ class OwnPlayer extends Player {
         return highest;
     }
 
-    public dynamic function onLose() {
-    }
+
 }

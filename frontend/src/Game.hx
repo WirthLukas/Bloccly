@@ -55,9 +55,18 @@ class Game extends hxd.App {
         wsClient = new WebSocketClient("ws://172.17.216.217:8100/ws");
         wsClient.onNewPlayerCallback = function(playerId) {
             if(playerId != players[0].playerId){
-                var newPlayer: Player = new OtherPlayer(colorProvider, s2d, players.length * (40 + Constants.BOARD_WIDTH), players.length * 2);
+    
+                var xOffset = players.length * (40 + Constants.BOARD_WIDTH), yOffset = players.length * 2, row = 0;
+                if(players.length % 5 == 0){
+                   row += Constants.BOARD_HEIGHT; 
+                } 
+
+                var newPlayer: Player = new OtherPlayer(colorProvider, s2d, xOffset, row * yOffset);
                 newPlayer.playerId = playerId;
                 newPlayer.init();
+                newPlayer.onLose = function() {
+                    players.remove(newPlayer);
+                }
                 players.push(newPlayer);
                 style.addObject(newPlayer.board);
                 wsClient.addObserver(newPlayer);
@@ -133,4 +142,4 @@ class Game extends hxd.App {
         new Game();
     }
     
-}
+} 

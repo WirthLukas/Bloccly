@@ -27,7 +27,7 @@ class Player implements Observer {
     private var offsetX: Int;
     private var offsetY: Int;
 
-    private var lost: Bool = false;
+    public var lost(default, null): Bool = false;
 
     public function new(colorProvider: ColorProvidable, parent: h2d.Object, offsetX: Int = 0, offsetY: Int = 0) {
         this.parent = parent;
@@ -69,4 +69,6 @@ class Player implements Observer {
         }
     }
 
+    public dynamic function onLose() {
+    }
 }
