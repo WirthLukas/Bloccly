@@ -20,17 +20,9 @@ func main() {
 	data.WriteToDb(repo, 1, 200)
 	data.ReadScores(repo)
 
-	/*fmt.Println(">> Bloccly Go Server v0.1 <<")
-	//fmt.Println(Block.Blue.Block())
+	fmt.Println(">> Bloccly Go Server v1.0 <<")
 	setupRoutes()
-	fmt.Printf("[INFO]: Server running on crack and alcohol %+v\n", port)
-	http.ListenAndServe(":" + strconv.Itoa(port), nil)*/
-
-
-	fmt.Println(">> Bloccly Go Server v0.2 <<")
-	//fmt.Println(Block.Blue.Block())
-	setupRoutes()
-	fmt.Printf("[INFO]: Server running on port %+v, stress and depression. \n", port)
+	fmt.Printf("[INFO]: Server running on port %+v.\n", port)
 	_ = http.ListenAndServe(":"+strconv.Itoa(port), nil)
 }
 

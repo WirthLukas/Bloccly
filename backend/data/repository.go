@@ -5,6 +5,7 @@ import (
 	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 	"log"
 	"strconv"
+	"time"
 )
 
 type Repository struct {
@@ -28,6 +29,7 @@ func WriteToDb(repository *Repository, playerid int, points int) {
 	err := r.DB("bloccly").Table("scores").Insert(map[string]string{
 		"playerid": strconv.Itoa(playerid),
 		"points": strconv.Itoa(points),
+		"timestamp": time.Now().Local().String(),
 	}).Exec(repository.Session)
 
 	if err != nil {
