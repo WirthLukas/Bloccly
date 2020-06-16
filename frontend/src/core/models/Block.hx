@@ -1,7 +1,6 @@
 package core.models;
 
 import core.pattern.observer.Observable;
-import core.contracts.Placeable;
 
 using core.pattern.observer.ObservableExtender;
 

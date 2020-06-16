@@ -22,10 +22,8 @@ using utils.ArrayTools;
 
 class Game extends hxd.App {
     private var colorProvider: ColorProvidable = new LocalColorProvider();
-    public static var test = 10;
 
     //Multiplayer variables
-    private var lost: Bool = false;
     private var wsClient: WebSocketClient; //= new WebSocketClient("ws://localhost:8100/ws"); //Testing: wss://echo.websocket.org, Server: ws://localhost:8100/ws
     private var playerId = 1;
     private var players: Array<Player> = [];
@@ -85,7 +83,7 @@ class Game extends hxd.App {
 		    b.minHeight = b.maxHeight = s2d.height;
 
             var alert = new AlertComp("You lost the game :(", Res.mail.toTile() , b);
-            alert.icon.addShader(new h3d.shader.ColorKey(256));
+            alert.icon.addShader(new h3d.shader.ColorAdd(0xffffff));
             alert.alertText.font = viewFont;
             alert.alertBtn.onClick = () -> {
                 alert.remove();
@@ -120,17 +118,9 @@ class Game extends hxd.App {
     override function update(dt:Float) {
         super.update(dt);
 
-        // players.forEach(p -> p.update());
         players.forEach(p -> p.updatePlayer());
         style.sync();
     }
-
-    /*            
-    //Needs more functionality
-    private function startNewGame(){
-        var fullRows: Array<Bool> = [ for(i in 0...FIELD_HEIGHT) true];
-        clearFullRows(fullRows);
-    }*/
 
     static function main() {
         #if hl
