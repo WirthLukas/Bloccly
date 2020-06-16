@@ -1,5 +1,6 @@
 package web;
 
+import format.png.Data.Color;
 import core.models.Block;
 import core.pattern.observer.Observable;
 import core.pattern.observer.Observer;
@@ -10,6 +11,7 @@ using utils.ArrayTools;
 class OtherPlayer extends Player implements Observer {
     public function new(colorProvider: ColorProvidable, parent: h2d.Object, offsetX: Int = 0, offsetY: Int = 0) {
         super(colorProvider, parent, offsetX, offsetY);
+        nextColor = Color.Blue;
     }
 
     public override function updatePlayer(){

@@ -33,6 +33,7 @@ class OwnPlayer extends Player {
     ) {
         super(colorProvider, parent, offsetX, offsetY);
         this.wsClient = wsClient;
+        nextColor = colorProvider.getNextColor();
     }
 
     override function init() {

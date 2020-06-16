@@ -45,7 +45,7 @@ class Player implements Observer {
             .show();
 
         pool.onFreed = block -> tilePool.freeOf(block);
-        nextColor = colorProvider.getNextColor();
+        // nextColor = colorProvider.getNextColor();
     }
 
     public function updatePlayer() {
