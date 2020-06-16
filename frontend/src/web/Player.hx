@@ -61,7 +61,12 @@ class Player implements Observer {
     }
 
     public function update(sender: Observable, ?data: Any): Void{
-    }
+        if(Std.is(sender, WebSocketClient)){
+            var wsMessage : WebSocketMessage = cast data;
 
+            if(wsMessage.command == CommandType.Id)
+                playerId = wsMessage.playerId;
+        }
+    }
 
 }

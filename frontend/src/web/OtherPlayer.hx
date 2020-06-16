@@ -17,12 +17,10 @@ class OtherPlayer extends Player implements Observer {
     }
 
     public override function update(sender: Observable, ?data: Any): Void{
+        super.update(sender, data);
         if(Std.is(sender, WebSocketClient)){
             var wsMessage : WebSocketMessage = cast data;
-
-            if(wsMessage.command == CommandType.Id)
-                playerId = wsMessage.playerId;
-            else if(wsMessage.playerId == playerId){
+            if(wsMessage.playerId == playerId){
                 switch(wsMessage.command){
                     case CommandType.Loss:
                         lost = true;

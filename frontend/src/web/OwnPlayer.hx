@@ -119,7 +119,7 @@ class OwnPlayer extends Player {
     private inline function playerLost(): Bool
         return figure.blocks.filter(block -> block.y < 2).length > 0;
 
-    private inline function clearFullRowsIfNeccessary() {
+    private function clearFullRowsIfNeccessary() {
         //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
         var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
 
