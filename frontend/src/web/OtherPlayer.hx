@@ -1,6 +1,6 @@
 package web;
 
-import format.png.Data.Color;
+import view.Color;
 import core.models.Block;
 import core.pattern.observer.Observable;
 import core.pattern.observer.Observer;
