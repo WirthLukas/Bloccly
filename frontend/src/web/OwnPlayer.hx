@@ -11,6 +11,7 @@ import hxd.Key;
 import logic.GameFieldChecker;
 import view.ColorProvidable;
 import core.models.Figure;
+import logic.Score;
 
 class OwnPlayer extends Player {
 
@@ -32,6 +33,7 @@ class OwnPlayer extends Player {
     ) {
         super(colorProvider, parent, offsetX, offsetY);
         this.wsClient = wsClient;
+        nextColor = colorProvider.getNextColor();
     }
 
     override function init() {
@@ -46,7 +48,7 @@ class OwnPlayer extends Player {
 
         if(music != null){
             //Play the music and loop it
-            // music.play(true);
+            music.play(true, 0.2);
         }
     }
 
@@ -69,9 +71,11 @@ class OwnPlayer extends Player {
                 lost = true;
                 trace("You lost the game.");
                 music.dispose();
-                var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, pool.usedBlocks);
+
+                var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, Score.getInstance().score);
+
                 wsClient.sendWebSocketMessage(wsMessage);
-                onLoose();
+                onLose();
             }
             else {
                 clearFullRowsIfNeccessary();
@@ -116,7 +120,7 @@ class OwnPlayer extends Player {
     private inline function playerLost(): Bool
         return figure.blocks.filter(block -> block.y < 2).length > 0;
 
-    private inline function clearFullRowsIfNeccessary() {
+    private function clearFullRowsIfNeccessary() {
         //If a Block reaches the end of its journey, checkRowFull() is called to check, if it filled a line
         var fullRows: Array<Bool> = GameFieldChecker.checkRowFull(pool.usedBlocks);
 
@@ -125,12 +129,15 @@ class OwnPlayer extends Player {
             trace('music change');
             music.dispose();
             music = Res.load('bc_int.mp3').toSound();
-            // music.play(true);
+            music.play(true, 0.2);
             finale = true;
         }
 
-        if (fullRows.filter(row -> row).length >= 1) {
-            clearFullRows(fullRows); 
+        var fullRowsCount = fullRows.filter(row -> row).length;
+
+        if (fullRowsCount >= 1) {
+            clearFullRows(fullRows);
+            Score.getInstance().addScore(fullRowsCount * 10); 
         }
          
         var wsMessage = new WebSocketMessage(CommandType.BlockUpdate, playerId, pool.usedBlocks);
@@ -172,6 +179,5 @@ class OwnPlayer extends Player {
         return highest;
     }
 
-    public dynamic function onLoose() {
-    }
+
 }

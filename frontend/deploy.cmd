@@ -3,7 +3,7 @@ haxe pak.hxml
 hl packing.hl
 DEL packing.hl
 RENAME res.null.pak res.pak
-MKDIR bloccly
-MOVE res.pak bloccly
-COPY bin\hl\game.hl bloccly\game.hl
+MKDIR bin\release\bloccly
+MOVE res.pak bin\release\bloccly
+COPY bin\hl\game.hl bin\release\bloccly\game.hl
 Pause

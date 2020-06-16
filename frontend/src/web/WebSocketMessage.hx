@@ -33,14 +33,14 @@ class WebSocketMessage {
         switch(wsMessage.command){
             case CommandType.Loss:
                 if(Std.is(wsMessage.data, Array)){
-                    /*
-                    var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
+                    /*var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
                     jMessage += "[" + blockArrayJson;
                     jMessage = jMessage.substr(0, jMessage.length - 1);
                     jMessage += "]";*/
-                    jMessage += "\"" + "520" + "\""; //To be score
+                    jMessage += "\"" + Serializer.run(wsMessage.data) + "\"";
                 } else 
-                    return "Wrong Data";
+                    jMessage += "\"" + wsMessage.data + "\""; //To be score
+
             case CommandType.BlockUpdate:
                 if(Std.is(wsMessage.data, Array)){
                     /*var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
@@ -71,7 +71,7 @@ class WebSocketMessage {
         return blockString;
     }
 
-    public static function fromJson(jMessage: String, initial: Bool): WebSocketMessage{
+    public static function fromJson(jMessage: String): WebSocketMessage{
         var message: haxe.DynamicAccess<Dynamic> = Json.parse(jMessage);
 
         var command = CommandType.Id;
@@ -83,13 +83,19 @@ class WebSocketMessage {
         for (key in message.keys()) {
             cnt++;
             switch(cnt){
-                case 1: 
+                /*case 1: 
                     playerId = message.get(key);
                 case 2:
                     //data = message.get(key); //as pure Json
                     data = message.get(key); //as serialized Blocks
                 case 3:
+                    command = getCommandTypeFromNumber(message.get(key));*/
+                case 1:
                     command = getCommandTypeFromNumber(message.get(key));
+                case 2:
+                    data = message.get(key);
+                case 3:
+                    playerId = message.get(key);
             }
         } 
 

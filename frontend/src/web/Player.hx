@@ -9,6 +9,9 @@ import view.ColorProvidable;
 import h2d.Text;
 import view.BlockTilePool;
 import logic.BlockPool;
+import core.models.Block;
+
+using utils.ArrayTools;
 
 class Player implements Observer {
     public var playerId: Int;
@@ -24,7 +27,7 @@ class Player implements Observer {
     private var offsetX: Int;
     private var offsetY: Int;
 
-    private var lost: Bool = false;
+    public var lost(default, null): Bool = false;
 
     public function new(colorProvider: ColorProvidable, parent: h2d.Object, offsetX: Int = 0, offsetY: Int = 0) {
         this.parent = parent;
@@ -42,11 +45,11 @@ class Player implements Observer {
             .show();
 
         pool.onFreed = block -> tilePool.freeOf(block);
-        nextColor = colorProvider.getNextColor();
+        // nextColor = colorProvider.getNextColor();
     }
 
     public function updatePlayer() {
-    }
+    }   
 
     public function init() {
         board = new GameBoardViewComp(
@@ -63,18 +66,9 @@ class Player implements Observer {
 
             if(wsMessage.command == CommandType.Id)
                 playerId = wsMessage.playerId;
-
-            else if(wsMessage.playerId == playerId){
-                switch(wsMessage.command){
-                    case CommandType.Loss:
-                        lost = true;
-                    case CommandType.BlockUpdate:
-                        pool.usedBlocks; // = wsMessage.data; //TODO: update usedBlocks
-                    default: trace("Wrong CommandType");
-                }
-            }
         }
     }
 
-
+    public dynamic function onLose() {
+    }
 }

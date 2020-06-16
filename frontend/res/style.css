@@ -52,3 +52,15 @@ button.highlight {
 button text {
 	align: middle middle;
 }
+
+#score-wrapper {
+	width: 200;
+	height: 80;
+	content-align: middle middle;
+	background: #555;
+	background-alpha: 0.8;
+}
+
+score:hover #score-wrapper {
+	background: #48a;
+}
