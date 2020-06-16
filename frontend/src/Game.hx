@@ -50,7 +50,7 @@ class Game extends hxd.App {
 
         style = new h2d.domkit.Style();
 		style.load(hxd.Res.style);
-        style.allowInspect = true;
+        // style.allowInspect = true;
 
         wsClient = new WebSocketClient("ws://172.17.216.217:8100/ws");
         wsClient.onNewPlayerCallback = function(playerId) {
@@ -88,32 +88,6 @@ class Game extends hxd.App {
         style.addObject(ownPlayer.board);
         players.push(ownPlayer);
 
-        // var ownPlayer2 = new OwnPlayer(colorProvider, wsClient, s2d, 40 + Constants.BOARD_WIDTH, 2);
-        // ownPlayer2.playerId = 1; //TODO: Get playerId through websocket
-        // ownPlayer2.onLoose = () -> {
-        //     var b = new h2d.Flow(s2d);
-        //     b.horizontalAlign = Middle;
-        //     b.verticalAlign = FlowAlign.Bottom;
-        //     b.minWidth = b.maxWidth = s2d.width;
-		//     b.minHeight = b.maxHeight = s2d.height;
-
-        //     var font = DefaultFont.get();
-        //     font.resizeTo(30);
-
-        //     var alert = new AlertComp("You lost the game :(", Res.mail.toTile() , b);
-        //     alert.icon.addShader(new h3d.shader.ColorKey(256));
-        //     alert.alertText.font = font;
-        //     alert.alertBtn.onClick = () -> {
-        //         alert.remove();
-        //     }
-
-        //     style.addObject(alert);
-        // };
-
-        // ownPlayer2.init();
-        // style.addObject(ownPlayer2.board);
-        // players.push(ownPlayer2);
-
         rightTop = new h2d.Flow(s2d);
         rightTop.horizontalAlign = FlowAlign.Right;
         rightTop.verticalAlign = FlowAlign.Top;
@@ -150,7 +124,7 @@ class Game extends hxd.App {
 
     static function main() {
         #if hl
-        Resource.LIVE_UPDATE = true;
+        // Resource.LIVE_UPDATE = true;
         Res.initLocal();
         // Res.initPak();
         #else
