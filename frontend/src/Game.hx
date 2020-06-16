@@ -55,7 +55,7 @@ class Game extends hxd.App {
         wsClient = new WebSocketClient("ws://172.17.216.217:8100/ws");
         wsClient.onNewPlayerCallback = function(playerId) {
             if(playerId != players[0].playerId){
-                var newPlayer: Player = new OtherPlayer(colorProvider, s2d, (players.length - 1) * (40 + Constants.BOARD_WIDTH), (players.length - 1) * 2);
+                var newPlayer: Player = new OtherPlayer(colorProvider, s2d, players.length * (40 + Constants.BOARD_WIDTH), players.length * 2);
                 newPlayer.playerId = playerId;
                 newPlayer.init();
                 players.push(newPlayer);

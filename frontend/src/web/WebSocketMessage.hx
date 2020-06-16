@@ -39,7 +39,7 @@ class WebSocketMessage {
                     jMessage += "]";*/
                     jMessage += "\"" + Serializer.run(wsMessage.data) + "\"";
                 } else 
-                    jMessage += "\"" + "520" + "\""; //To be score
+                    jMessage += "\"" + wsMessage.data + "\""; //To be score
 
             case CommandType.BlockUpdate:
                 if(Std.is(wsMessage.data, Array)){
