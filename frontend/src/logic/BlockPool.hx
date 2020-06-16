@@ -63,6 +63,10 @@ class BlockPool implements Observable {
         ArraySort.sort(filtered, (b1, b2) -> b1.y - b2.y);
         return filtered.shift().x;
     }
+
+    public function clear() {
+        usedBlocks.forEach(block -> free(block));
+    }
                 
     public dynamic function onAdded(block: Block) { }
     public dynamic function onFreed(block: Block) { }

@@ -70,9 +70,11 @@ class OwnPlayer extends Player {
                 lost = true;
                 trace("You lost the game.");
                 music.dispose();
+
                 var wsMessage = new WebSocketMessage(CommandType.Loss, playerId, Score.getInstance().score);
+
                 wsClient.sendWebSocketMessage(wsMessage);
-                onLoose();
+                onLose();
             }
             else {
                 clearFullRowsIfNeccessary();
@@ -176,6 +178,6 @@ class OwnPlayer extends Player {
         return highest;
     }
 
-    public dynamic function onLoose() {
+    public dynamic function onLose() {
     }
 }

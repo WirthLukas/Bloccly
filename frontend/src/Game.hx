@@ -64,8 +64,7 @@ class Game extends hxd.App {
         }
         
         ownPlayer = new OwnPlayer(colorProvider, wsClient, s2d, 5, 2);
-        ownPlayer.playerId = 1; //TODO: Get playerId through websocket
-        ownPlayer.onLoose = () -> {
+        ownPlayer.onLose = () -> {
             var b = new h2d.Flow(s2d);
             b.horizontalAlign = Middle;
             b.verticalAlign = FlowAlign.Bottom;

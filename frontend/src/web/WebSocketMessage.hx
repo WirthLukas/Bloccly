@@ -40,6 +40,7 @@ class WebSocketMessage {
                     jMessage += "\"" + Serializer.run(wsMessage.data) + "\"";
                 } else 
                     jMessage += "\"" + "520" + "\""; //To be score
+
             case CommandType.BlockUpdate:
                 if(Std.is(wsMessage.data, Array)){
                     /*var blockArrayJson = blocksToJson(cast wsMessage.data);// Array<Block> = cast wsMessage.data;
