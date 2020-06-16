@@ -36,7 +36,7 @@ class BlockTile implements Observer {
     }
 
     public function withColor(color: Color): BlockTile {
-        tile = (switch color {
+        var x = switch color {
             case Orange: Res.orange;
             case Cyan: Res.cyan;
             case Blue: Res.blue;
@@ -45,7 +45,15 @@ class BlockTile implements Observer {
             case Red: Res.red;
             case Yellow: Res.yellow;
             default: throw "No such type available";
-        }).toTile();
+        }
+
+        try {
+            tile = x.toTile();
+        } catch(err: Dynamic) {
+            var d = 0;
+            trace(err);
+        }
+
         b.tile = tile;
         return this;
     }
