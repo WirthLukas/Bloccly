@@ -18,3 +18,7 @@
 
 # output files
 bin/
+
+### Go ###
+
+.idea/
